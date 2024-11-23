@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { sendMessage } from '../services/api';
 import { debounce } from 'lodash';
 
-const Chat = ({ token }) => {
+const Chat = ({ token, isDarkTheme }) => {
     const [message, setMessage] = useState('');
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -25,11 +25,29 @@ const Chat = ({ token }) => {
         fetchHistory();
     }, [token]);
 
+    const handleFileUpload = async (event) => {
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/upload', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+
+            const data = await response.json();
+            setHistory([...history, { user: file.name, bot: data.response }]);
+        } catch (error) {
+            console.error('Ошибка при загрузке файла:', error);
+        }
+    };
+
     const handleSendDebounced = debounce(async (message, isCommand, token, setHistory) => {
         try {
             let res;
             if (isCommand) {
-                // Если это команда
                 const response = await fetch('http://127.0.0.1:8000/execute-command', {
                     method: 'POST',
                     headers: {
@@ -46,7 +64,6 @@ const Chat = ({ token }) => {
                     res = { response: errorData.detail || 'Ошибка при выполнении команды.' };
                 }
             } else {
-                // Если это обычное сообщение
                 res = await sendMessage(message, token);
             }
 
@@ -84,7 +101,7 @@ const Chat = ({ token }) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setHistory([]); // Очищаем историю на фронтенде
+            setHistory([]);
         } catch (error) {
             console.error('Ошибка при очистке истории:', error);
         }
@@ -92,34 +109,86 @@ const Chat = ({ token }) => {
 
     return (
         <div className="container">
-            <h2>Chat</h2>
-            <div className="input-group mb-3">
-                <input
-                    type="text"
-                    className="form-control"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Введите сообщение"
-                />
-                <button className="btn btn-primary" onClick={handleSend} disabled={loading}>
-                    {loading ? 'Отправляем...' : 'Отправить'}
-                </button>
-            </div>
-            <button
-                className="btn btn-danger mb-3"
-                onClick={handleClearHistory}
-                style={{ display: 'block', margin: '0 auto' }}
-            >
-                Очистить историю
-            </button>
-            <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                <h3>История чата:</h3>
-                {history.map((item, index) => (
-                    <div key={index} className="mb-3">
-                        <p><strong>Вы:</strong> {item.user}</p>
-                        <p><strong>Ответ:</strong> {item.bot}</p>
+            <h2 className="text-center mb-4">Чат</h2>
+            <div className="chat-container p-3 mb-4">
+                <div
+                    className="chat-history"
+                    style={{
+                        maxHeight: '300px',
+                        overflowY: 'auto',
+                        marginBottom: '20px',
+                        padding: '10px',
+                        backgroundColor: isDarkTheme ? '#545762' : '#ebebeb', // Фон чата
+                        color: isDarkTheme ? '#ffffff' : '#000000', // Цвет текста
+                        borderRadius: '10px',
+                    }}
+                >
+                    {history.length === 0 ? (
+                        <p className="text-center text-muted">История пуста</p>
+                    ) : (
+                        history.map((item, index) => (
+                            <div key={index} className="mb-3">
+                                <p>
+                                    <strong>Вы:</strong> {item.user}
+                                </p>
+                                <p>
+                                    <strong>Ответ:</strong> {item.bot}
+                                </p>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                <div className="chat-input">
+                    <div className="d-flex gap-2">
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Введите сообщение"
+                        />
+                        <button className="btn btn-primary" onClick={handleSend} disabled={loading}>
+                            {loading ? 'Отправляем...' : 'Отправить'}
+                        </button>
+                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                            <button
+                                className="btn btn-secondary"
+                                style={{
+                                    cursor: 'pointer',
+                                    padding: '10px 20px',
+                                    backgroundColor: isDarkTheme ? '#6c757d' : '#e0e0e0',
+                                    color: isDarkTheme ? '#ffffff' : '#000000',
+                                    borderRadius: '5px',
+                                    border: 'none',
+                                }}
+                                onClick={() => document.getElementById('fileInput').click()}
+                            >
+                                Загрузить файл
+                            </button>
+                            <input
+                                id="fileInput"
+                                type="file"
+                                onChange={handleFileUpload}
+                                style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    top: 0,
+                                    opacity: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    cursor: 'pointer',
+                                }}
+                            />
+                        </div>
                     </div>
-                ))}
+                </div>
+                <button
+                    className="btn btn-danger w-100 mt-3"
+                    onClick={handleClearHistory}
+                >
+                    Очистить историю
+                </button>
             </div>
         </div>
     );
