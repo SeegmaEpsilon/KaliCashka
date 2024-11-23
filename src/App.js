@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import Chat from './components/Chat';
 import Login from './pages/Login';
-import logoDark from './assets/logo_theme_dark.png'; // Логотип для тёмной темы
-import logoLight from './assets/logo_theme_light.png'; // Логотип для светлой темы
+import logoDark from './assets/logo_theme_dark.png';
+import logoLight from './assets/logo_theme_light.png';
 
 function App() {
   const [token, setToken] = useState(null);
-  const [isDarkTheme, setIsDarkTheme] = useState(true); // По умолчанию тёмная тема
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
 
   const handleLogin = (accessToken) => {
     setToken(accessToken);
   };
 
   const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme); // Переключение темы
+    setIsDarkTheme(!isDarkTheme);
   };
 
   const appStyle = {
@@ -24,19 +24,12 @@ function App() {
     position: 'relative',
   };
 
-  // Выбор логотипа в зависимости от темы
   const currentLogo = isDarkTheme ? logoDark : logoLight;
 
   return (
     <div className="App" style={appStyle}>
-      {/* Слайдер для переключения темы */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-        }}
-      >
+      {/* Верхний правый блок (Переключатель темы + кнопка "Выйти") */}
+      <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <label
           className="theme-switch"
           style={{
@@ -80,37 +73,33 @@ function App() {
             />
           </span>
         </label>
+        {token && (
+          <button
+            onClick={() => setToken(null)}
+            style={{
+              backgroundColor: isDarkTheme ? '#ffffff' : '#3c3f48',
+              color: isDarkTheme ? '#000000' : '#ffffff',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '5px',
+              cursor: 'pointer',
+            }}
+          >
+            Выйти
+          </button>
+        )}
       </div>
       <header style={{ textAlign: 'center', marginBottom: '20px' }}>
         <img src={currentLogo} alt="KaliCashka Logo" style={{ width: '150px', marginBottom: '10px' }} />
         {!token && <h1>Добро пожаловать в KaliCashka</h1>}
       </header>
-
       <main>
-    {!token ? (
-        <Login onLogin={handleLogin} isDarkTheme={isDarkTheme} />
-    ) : (
-        <>
-            <Chat token={token} isDarkTheme={isDarkTheme} />
-            {/* Кнопка выхода */}
-            <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                <button
-                    onClick={() => setToken(null)} // Сбрасываем токен
-                    style={{
-                        backgroundColor: isDarkTheme ? '#ffffff' : '#3c3f48',
-                        color: isDarkTheme ? '#000000' : '#ffffff',
-                        border: 'none',
-                        padding: '10px 20px',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                    }}
-                >
-                    Выйти
-                </button>
-            </div>
-        </>
-    )}
-</main>
+        {!token ? (
+          <Login onLogin={handleLogin} isDarkTheme={isDarkTheme} />
+        ) : (
+          <Chat token={token} isDarkTheme={isDarkTheme} />
+        )}
+      </main>
     </div>
   );
 }
