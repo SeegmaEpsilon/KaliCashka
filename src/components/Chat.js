@@ -61,6 +61,7 @@ const Chat = ({ token, isDarkTheme }) => {
         borderRadius: '10px',
         maxHeight: '400px',
         overflowY: 'auto',
+        transition: 'background-color 0.5s ease, color 0.5s ease', // Плавный переход
     };
 
     return (

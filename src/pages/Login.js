@@ -38,6 +38,7 @@ const Login = ({ onLogin, isDarkTheme }) => {
         maxWidth: '400px',
         margin: 'auto',
         marginTop: '100px',
+        transition: 'background-color 0.5s ease, color 0.5s ease', // Плавный переход
     };
 
     return (

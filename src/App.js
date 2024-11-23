@@ -24,7 +24,8 @@ function App() {
     minHeight: '100vh',
     padding: '20px',
     position: 'relative',
-  };
+    transition: 'background-color 0.5s ease, color 0.5s ease', // Плавный переход
+};
 
   const currentLogo = isDarkTheme ? logoDark : logoLight;
 
