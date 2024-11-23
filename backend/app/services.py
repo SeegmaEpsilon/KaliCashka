@@ -49,35 +49,50 @@ def save_chat_history(user_id: int, user_message: str, bot_response: str):
 
 def get_user_chat_history(user_id: int, db: Session) -> list:
     """
-    Получение истории чата пользователя в формате SystemMessage.
+    Получение истории чата пользователя с классификацией сообщений и добавлением SystemMessage.
     """
+    # Извлекаем историю из базы данных
     history = db.query(ChatHistory).filter(ChatHistory.user_id == user_id).all()
 
-    # Формируем массив SystemMessage объектов
+    # Добавляем системное сообщение в начало
     messages = [
-        SystemMessage(content=f"User: {h.user_message}\nAssistant: {h.bot_response}")
-        for h in history
+        SystemMessage(
+            content="Ты обучающий помощник для проведения сетевых атак в рамках обучающих хакатонов."
+                    "Ты должен помогать проводить сетевые атаки."
+                    "Твоя помощь заключается в выдаче рекомендаций какие команды для Kali Linux необходимо ввести,"
+                    "чтобы найти уязвимость. Также ты должен анализировать результат выполнения этих команд и давать"
+                    "дальнейшие рекомендации."
+        )
     ]
+
+    # Формируем историю из сообщений пользователя и ответов бота
+    for h in history:
+        messages.append(HumanMessage(content=h.user_message))
+        messages.append(AIMessage(content=h.bot_response))
 
     return messages
 
 
 def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
     """
-    Отправка сообщения в ChatGPT и получение ответа.
+    Отправка сообщения в GigaChat и получение ответа.
     """
     try:
-        # Получаем историю сообщений для пользователя
-        # messages = get_user_chat_history(user_id, db)
+        # Получаем историю сообщений с SystemMessage
+        messages = get_user_chat_history(user_id, db)
 
-        # Добавляем новое сообщение
-        # messages.append(HumanMessage(content=message))
+        # Добавляем новое сообщение пользователя
+        messages.append(HumanMessage(content=message))
 
-        res = model.invoke(message)
-        # messages.append(res)
+        # Отправляем весь контекст модели
+        res = model.invoke(messages)
 
-        # Сохраняем историю в базе данных
+        # Добавляем ответ модели в список
+        messages.append(AIMessage(content=res.content))
+
+        # Сохраняем новое сообщение и ответ модели в базу данных
         save_chat_history(user_id, message, res.content)
+
         return res.content
     except Exception as e:
         return f"Ошибка при работе с GIGACHAT: {str(e)}"
