@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 # Подключение к SQLite
 DATABASE_URL = "sqlite:///./app.db"
@@ -16,3 +16,14 @@ metadata = MetaData()
 def init_db():
     from .models import User, ChatHistory, CommandHistory
     Base.metadata.create_all(bind=engine)
+
+
+def get_db() -> Session:
+    """
+    Генератор сессий базы данных.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
