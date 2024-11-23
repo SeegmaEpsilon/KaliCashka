@@ -11,20 +11,20 @@ const Login = ({ onLogin, isDarkTheme }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (username === devUsername && password === devPassword) {
             const fakeToken = 'dev-token';
-            onLogin(fakeToken);
+            onLogin(fakeToken, 'Developer'); // Добавляем фиктивное имя пользователя
             return;
         }
-
+    
         try {
             const response = await axios.post('http://127.0.0.1:8000/login', {
                 username,
                 password,
             });
             const { access_token } = response.data;
-            onLogin(access_token);
+            onLogin(access_token, username); // Передаём имя пользователя
         } catch (err) {
             setError('Неверный логин или пароль');
         }

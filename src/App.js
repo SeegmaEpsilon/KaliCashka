@@ -7,9 +7,11 @@ import logoLight from './assets/logo_theme_light.png';
 function App() {
   const [token, setToken] = useState(null);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [username, setUsername] = useState('');
 
-  const handleLogin = (accessToken) => {
+  const handleLogin = (accessToken, username) => {
     setToken(accessToken);
+    setUsername(username);
   };
 
   const toggleTheme = () => {
@@ -30,6 +32,7 @@ function App() {
     <div className="App" style={appStyle}>
       {/* Верхний правый блок (Переключатель темы + кнопка "Выйти") */}
       <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {token && <span style={{ marginRight: '10px' }}>Привет, <strong>{username}</strong></span>}
         <label
           className="theme-switch"
           style={{
@@ -89,6 +92,7 @@ function App() {
           </button>
         )}
       </div>
+
       <header style={{ textAlign: 'center', marginBottom: '20px' }}>
         <img src={currentLogo} alt="KaliCashka Logo" style={{ width: '150px', marginBottom: '10px' }} />
         {!token && <h1>Добро пожаловать в KaliCashka</h1>}
