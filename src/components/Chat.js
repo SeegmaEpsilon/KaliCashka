@@ -26,18 +26,40 @@ const Chat = ({ token }) => {
 
     const handleSend = async () => {
         if (!message.trim()) return;
-
+    
         setLoading(true);
         try {
-            const res = await sendMessage(message, token);
+            let res;
+            if (message.startsWith('/')) {
+                const response = await fetch('http://127.0.0.1:8000/execute-command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ command: message }),
+                });
+    
+                if (response.ok) {
+                    res = await response.json();
+                } else {
+                    const errorData = await response.json();
+                    res = { response: errorData.detail || 'Ошибка при выполнении команды.' };
+                }
+            } else {
+                res = await sendMessage(message, token);
+            }
+    
             setHistory([...history, { user: message, bot: res.response }]);
             setMessage('');
         } catch (error) {
             console.error('Ошибка при отправке сообщения:', error);
+            setHistory([...history, { user: message, bot: 'Ошибка при обработке вашего запроса.' }]);
         } finally {
             setLoading(false);
         }
     };
+    
 
     const handleClearHistory = async () => {
         const confirmed = window.confirm('Вы уверены, что хотите очистить всю историю чата?');
