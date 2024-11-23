@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { sendMessage } from '../services/api';
+import { debounce } from 'lodash';
 
 const Chat = ({ token }) => {
     const [message, setMessage] = useState('');
@@ -24,13 +25,11 @@ const Chat = ({ token }) => {
         fetchHistory();
     }, [token]);
 
-    const handleSend = async () => {
-        if (!message.trim()) return;
-    
-        setLoading(true);
+    const handleSendDebounced = debounce(async (message, isCommand, token, setHistory) => {
         try {
             let res;
-            if (message.startsWith('/')) {
+            if (isCommand) {
+                // Если это команда
                 const response = await fetch('http://127.0.0.1:8000/execute-command', {
                     method: 'POST',
                     headers: {
@@ -39,7 +38,7 @@ const Chat = ({ token }) => {
                     },
                     body: JSON.stringify({ command: message }),
                 });
-    
+
                 if (response.ok) {
                     res = await response.json();
                 } else {
@@ -47,24 +46,37 @@ const Chat = ({ token }) => {
                     res = { response: errorData.detail || 'Ошибка при выполнении команды.' };
                 }
             } else {
+                // Если это обычное сообщение
                 res = await sendMessage(message, token);
             }
-    
-            setHistory([...history, { user: message, bot: res.response }]);
+
+            setHistory((prevHistory) => [...prevHistory, { user: message, bot: res.response }]);
+        } catch (error) {
+            console.error('Ошибка при обработке запроса:', error);
+            setHistory((prevHistory) => [...prevHistory, { user: message, bot: 'Ошибка при обработке вашего запроса.' }]);
+        }
+    }, 500);
+
+    const handleSend = () => {
+        if (!message.trim()) return;
+
+        setLoading(true);
+
+        try {
+            const isCommand = message.startsWith('/');
+            handleSendDebounced(message, isCommand, token, setHistory);
             setMessage('');
         } catch (error) {
             console.error('Ошибка при отправке сообщения:', error);
-            setHistory([...history, { user: message, bot: 'Ошибка при обработке вашего запроса.' }]);
         } finally {
             setLoading(false);
         }
     };
-    
 
     const handleClearHistory = async () => {
         const confirmed = window.confirm('Вы уверены, что хотите очистить всю историю чата?');
         if (!confirmed) return;
-    
+
         try {
             await fetch('http://127.0.0.1:8000/chat/clear', {
                 method: 'POST',
