@@ -5,6 +5,7 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     // Фиктивные данные для разработчиков
     const devUsername = 'dev';
@@ -12,26 +13,30 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Включаем индикатор загрузки
 
-        // Если используются фиктивные логин и пароль
+        // Проверяем фиктивные логин и пароль
         if (username === devUsername && password === devPassword) {
-            const fakeToken = 'dev-token'; // Фиктивный токен для разработчиков
-            onLogin(fakeToken, 'Developer'); // Передаём фиктивное имя пользователя
+            const fakeToken = 'dev-token';
+            onLogin(fakeToken, 'Developer');
+            setLoading(false); // Выключаем индикатор загрузки
             return;
         }
 
         try {
-            // Логика входа через бэкенд
             const response = await axios.post('http://127.0.0.1:8000/login', {
                 username,
                 password,
             });
             const { access_token } = response.data;
-            onLogin(access_token, username); // Передаём токен и имя пользователя
+            onLogin(access_token, username);
         } catch (err) {
             setError('Неверный логин или пароль');
+        } finally {
+            setLoading(false); // Выключаем индикатор загрузки
         }
     };
+
 
     const loginStyle = {
         backgroundColor: isDarkTheme ? '#2d2f34' : '#f8f9fa',
@@ -70,7 +75,9 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary w-100">Войти</button>
+                <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                    {loading ? 'Входим...' : 'Войти'}
+                </button>
             </form>
             <p className="mt-3 text-center">
                 Нет аккаунта?{' '}

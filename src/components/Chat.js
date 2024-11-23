@@ -40,6 +40,9 @@ const Chat = ({ token }) => {
     };
 
     const handleClearHistory = async () => {
+        const confirmed = window.confirm('Вы уверены, что хотите очистить всю историю чата?');
+        if (!confirmed) return;
+    
         try {
             await fetch('http://127.0.0.1:8000/chat/clear', {
                 method: 'POST',
@@ -65,7 +68,7 @@ const Chat = ({ token }) => {
                     placeholder="Введите сообщение"
                 />
                 <button className="btn btn-primary" onClick={handleSend} disabled={loading}>
-                    {loading ? 'Отправка...' : 'Отправить'}
+                    {loading ? 'Отправляем...' : 'Отправить'}
                 </button>
             </div>
             <button

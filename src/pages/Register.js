@@ -5,18 +5,22 @@ const Register = ({ onRegister, isDarkTheme, onSwitchToLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+
         try {
-            // Отправляем данные для регистрации
             await axios.post('http://127.0.0.1:8000/register', {
                 username,
                 password,
             });
-            onRegister(); // Переход к логину после успешной регистрации
+            onRegister();
         } catch (err) {
             setError('Ошибка при регистрации. Попробуйте другой логин.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -59,7 +63,9 @@ const Register = ({ onRegister, isDarkTheme, onSwitchToLogin }) => {
                         style={{ display: 'block', margin: '0 auto', width: '100%' }} // Центрируем поле
                     />
                 </div>
-                <button type="submit" className="btn btn-primary w-100">Зарегистрироваться</button>
+                <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                    {loading ? 'Регистрируем...' : 'Зарегистрироваться'}
+                </button>
             </form>
             <p className="mt-3 text-center">
                 Уже есть аккаунт?{' '}

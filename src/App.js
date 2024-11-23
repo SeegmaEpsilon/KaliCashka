@@ -100,19 +100,19 @@ function App() {
         <img src={currentLogo} alt="KaliCashka Logo" style={{ width: '150px', marginBottom: '10px' }} />
         {!token && <h1>Добро пожаловать в KaliCashka</h1>}
       </header>
-      <main>
+      <main className={`fade-in`}>
         {!token ? (
           isRegistering ? (
             <Register
-              onRegister={() => setIsRegistering(false)} // Переключение к логину после регистрации
+              onRegister={() => setIsRegistering(false)}
               isDarkTheme={isDarkTheme}
-              onSwitchToLogin={() => setIsRegistering(false)} // Переключение к логину
+              onSwitchToLogin={() => setIsRegistering(false)}
             />
           ) : (
             <Login
               onLogin={handleLogin}
               isDarkTheme={isDarkTheme}
-              onSwitchToRegister={() => setIsRegistering(true)} // Переключение к регистрации
+              onSwitchToRegister={() => setIsRegistering(true)}
             />
           )
         ) : (
