@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
+const Register = ({ onRegister, isDarkTheme, onSwitchToLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await axios.post('http://127.0.0.1:8000/login', {
+            // Отправляем данные для регистрации
+            await axios.post('http://127.0.0.1:8000/register', {
                 username,
                 password,
             });
-            const { access_token } = response.data;
-            onLogin(access_token);
+            onRegister(); // Переход к логину после успешной регистрации
         } catch (err) {
-            setError('Неверный логин или пароль');
+            setError('Ошибка при регистрации. Попробуйте другой логин.');
         }
     };
 
-    const loginStyle = {
+    const registerStyle = {
         backgroundColor: isDarkTheme ? '#2d2f34' : '#f8f9fa',
         color: isDarkTheme ? '#ffffff' : '#000000',
         padding: '20px',
@@ -34,10 +33,10 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
     };
 
     return (
-        <div style={loginStyle}>
+        <div style={registerStyle}>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <h2 style={{ marginBottom: '20px' }}>Вход в систему</h2>
-            <form onSubmit={handleSubmit}>
+            <h2 style={{ marginBottom: '20px', textAlign: 'center' }}>Регистрация</h2>
+            <form onSubmit={handleSubmit} style={{ textAlign: 'center' }}>
                 <div className="mb-3">
                     <label className="form-label">Логин</label>
                     <input
@@ -46,6 +45,7 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
+                        style={{ display: 'block', margin: '0 auto', width: '100%' }} // Центрируем поле
                     />
                 </div>
                 <div className="mb-3">
@@ -56,28 +56,30 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        style={{ display: 'block', margin: '0 auto', width: '100%' }} // Центрируем поле
                     />
                 </div>
-                <button type="submit" className="btn btn-primary w-100">Войти</button>
+                <button type="submit" className="btn btn-primary w-100">Зарегистрироваться</button>
             </form>
             <p className="mt-3 text-center">
-                Нет аккаунта?{' '}
+                Уже есть аккаунт?{' '}
                 <button
                     className="btn btn-link p-0"
-                    onClick={onSwitchToRegister}
+                    onClick={onSwitchToLogin}
                     style={{
                         color: isDarkTheme ? '#ffffff' : '#000000',
                         textDecoration: 'underline',
-                        verticalAlign: 'baseline', // Выравнивание по линии текста
-                        padding: '0', // Убираем лишние отступы
+                        verticalAlign: 'baseline',
+                        padding: '0',
                     }}
                 >
-                    Зарегистрироваться
+                    Войти
                 </button>
             </p>
-
         </div>
     );
+
+
 };
 
-export default Login;
+export default Register;

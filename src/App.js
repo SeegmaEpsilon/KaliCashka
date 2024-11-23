@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Chat from './components/Chat';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import logoDark from './assets/logo_theme_dark.png';
 import logoLight from './assets/logo_theme_light.png';
 
@@ -8,6 +9,7 @@ function App() {
   const [token, setToken] = useState(null);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [username, setUsername] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false); // По умолчанию форма входа
 
   const handleLogin = (accessToken, username) => {
     setToken(accessToken);
@@ -25,7 +27,7 @@ function App() {
     padding: '20px',
     position: 'relative',
     transition: 'background-color 0.5s ease, color 0.5s ease', // Плавный переход
-};
+  };
 
   const currentLogo = isDarkTheme ? logoDark : logoLight;
 
@@ -100,7 +102,19 @@ function App() {
       </header>
       <main>
         {!token ? (
-          <Login onLogin={handleLogin} isDarkTheme={isDarkTheme} />
+          isRegistering ? (
+            <Register
+              onRegister={() => setIsRegistering(false)} // Переключение к логину после регистрации
+              isDarkTheme={isDarkTheme}
+              onSwitchToLogin={() => setIsRegistering(false)} // Переключение к логину
+            />
+          ) : (
+            <Login
+              onLogin={handleLogin}
+              isDarkTheme={isDarkTheme}
+              onSwitchToRegister={() => setIsRegistering(true)} // Переключение к регистрации
+            />
+          )
         ) : (
           <Chat token={token} isDarkTheme={isDarkTheme} />
         )}
