@@ -161,10 +161,11 @@ const Chat = ({ token, isDarkTheme }) => {
                                     color: isDarkTheme ? '#ffffff' : '#000000',
                                     borderRadius: '5px',
                                     border: 'none',
+                                    whiteSpace: 'nowrap',
                                 }}
                                 onClick={() => document.getElementById('fileInput').click()}
                             >
-                                Загрузить файл
+                                Загрузить файл...
                             </button>
                             <input
                                 id="fileInput"
