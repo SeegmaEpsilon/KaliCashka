@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import logoDark from './assets/logo_theme_dark.png';
 import logoLight from './assets/logo_theme_light.png';
+import { useEffect } from 'react';
 
 function App() {
   const [token, setToken] = useState(null);
@@ -11,9 +12,28 @@ function App() {
   const [username, setUsername] = useState('');
   const [isRegistering, setIsRegistering] = useState(false); // По умолчанию форма входа
 
+  useEffect(() => {
+    // Загружаем токен из localStorage при загрузке страницы
+    const storedToken = localStorage.getItem('token');
+    const storedUsername = localStorage.getItem('username');
+    if (storedToken) {
+      setToken(storedToken);
+      setUsername(storedUsername || '');
+    }
+  }, []);
+
   const handleLogin = (accessToken, username) => {
     setToken(accessToken);
     setUsername(username);
+    localStorage.setItem('token', accessToken); // Сохраняем токен
+    localStorage.setItem('username', username); // Сохраняем имя пользователя
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+    setUsername('');
+    localStorage.removeItem('token'); // Удаляем токен из localStorage
+    localStorage.removeItem('username'); // Удаляем имя пользователя
   };
 
   const toggleTheme = () => {
@@ -81,7 +101,7 @@ function App() {
         </label>
         {token && (
           <button
-            onClick={() => setToken(null)}
+            onClick={handleLogout} // Добавляем вызов функции выхода
             style={{
               backgroundColor: isDarkTheme ? '#ffffff' : '#3c3f48',
               color: isDarkTheme ? '#000000' : '#ffffff',
