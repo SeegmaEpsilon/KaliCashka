@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { sendMessage } from '../services/api';
 
-const Chat = ({ token, isDarkTheme }) => {
+const Chat = ({ token }) => {
     const [message, setMessage] = useState('');
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -28,23 +28,8 @@ const Chat = ({ token, isDarkTheme }) => {
         if (!message.trim()) return;
 
         setLoading(true);
-
         try {
-            let res;
-            if (message.startsWith('/')) {
-                const response = await fetch('http://127.0.0.1:8000/execute-command', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ command: message }),
-                });
-                res = await response.json();
-            } else {
-                res = await sendMessage(message, token);
-            }
-
+            const res = await sendMessage(message, token);
             setHistory([...history, { user: message, bot: res.response }]);
             setMessage('');
         } catch (error) {
@@ -54,32 +39,43 @@ const Chat = ({ token, isDarkTheme }) => {
         }
     };
 
-    const chatStyle = {
-        backgroundColor: isDarkTheme ? '#2d2f34' : '#f8f9fa',
-        color: isDarkTheme ? '#ffffff' : '#000000',
-        padding: '10px',
-        borderRadius: '10px',
-        maxHeight: '400px',
-        overflowY: 'auto',
-        transition: 'background-color 0.5s ease, color 0.5s ease', // Плавный переход
+    const handleClearHistory = async () => {
+        try {
+            await fetch('http://127.0.0.1:8000/chat/clear', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setHistory([]); // Очищаем историю на фронтенде
+        } catch (error) {
+            console.error('Ошибка при очистке истории:', error);
+        }
     };
 
     return (
         <div className="container">
-            <h2>Чат</h2>
+            <h2>Chat</h2>
             <div className="input-group mb-3">
                 <input
                     type="text"
                     className="form-control"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Введите сообщение или команду (например, /nmap)"
+                    placeholder="Введите сообщение"
                 />
                 <button className="btn btn-primary" onClick={handleSend} disabled={loading}>
                     {loading ? 'Отправка...' : 'Отправить'}
                 </button>
             </div>
-            <div className="mt-4" style={chatStyle}>
+            <button
+                className="btn btn-danger mb-3"
+                onClick={handleClearHistory}
+                style={{ display: 'block', margin: '0 auto' }}
+            >
+                Очистить историю
+            </button>
+            <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <h3>История чата:</h3>
                 {history.map((item, index) => (
                     <div key={index} className="mb-3">

@@ -6,16 +6,28 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    // Фиктивные данные для разработчиков
+    const devUsername = 'dev';
+    const devPassword = 'devpass';
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Если используются фиктивные логин и пароль
+        if (username === devUsername && password === devPassword) {
+            const fakeToken = 'dev-token'; // Фиктивный токен для разработчиков
+            onLogin(fakeToken, 'Developer'); // Передаём фиктивное имя пользователя
+            return;
+        }
+
         try {
+            // Логика входа через бэкенд
             const response = await axios.post('http://127.0.0.1:8000/login', {
                 username,
                 password,
             });
             const { access_token } = response.data;
-            onLogin(access_token);
+            onLogin(access_token, username); // Передаём токен и имя пользователя
         } catch (err) {
             setError('Неверный логин или пароль');
         }
@@ -29,14 +41,14 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
         maxWidth: '400px',
         margin: 'auto',
         marginTop: '100px',
-        transition: 'background-color 0.5s ease, color 0.5s ease',
         textAlign: 'center',
+        transition: 'background-color 0.5s ease, color 0.5s ease',
     };
 
     return (
         <div style={loginStyle}>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <h2 style={{ marginBottom: '20px' }}>Вход в систему</h2>
+            <h2 style={{ marginBottom: '20px' }}>Вход</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label className="form-label">Логин</label>
@@ -68,14 +80,13 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
                     style={{
                         color: isDarkTheme ? '#ffffff' : '#000000',
                         textDecoration: 'underline',
-                        verticalAlign: 'baseline', // Выравнивание по линии текста
-                        padding: '0', // Убираем лишние отступы
+                        verticalAlign: 'baseline',
+                        padding: '0',
                     }}
                 >
                     Зарегистрироваться
                 </button>
             </p>
-
         </div>
     );
 };
