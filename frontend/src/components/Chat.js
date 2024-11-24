@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { sendMessage } from '../services/api';
 import { debounce } from 'lodash';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const Chat = ({ token, isDarkTheme }) => {
     const [message, setMessage] = useState('');
@@ -24,25 +26,6 @@ const Chat = ({ token, isDarkTheme }) => {
 
         fetchHistory();
     }, [token]);
-
-    const handleFileUpload = async (event) => {
-        const file = event.target.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const response = await fetch('http://127.0.0.1:8000/upload', {
-                method: 'POST',
-                headers: { Authorization: `Bearer ${token}` },
-                body: formData,
-            });
-
-            const data = await response.json();
-            setHistory([...history, { user: file.name, bot: data.response }]);
-        } catch (error) {
-            console.error('Ошибка при загрузке файла:', error);
-        }
-    };
 
     const handleSendDebounced = debounce(async (message, isCommand, token, setHistory) => {
         try {
@@ -71,6 +54,8 @@ const Chat = ({ token, isDarkTheme }) => {
         } catch (error) {
             console.error('Ошибка при обработке запроса:', error);
             setHistory((prevHistory) => [...prevHistory, { user: message, bot: 'Ошибка при обработке вашего запроса.' }]);
+        } finally {
+            setLoading(false);
         }
     }, 500);
 
@@ -85,8 +70,6 @@ const Chat = ({ token, isDarkTheme }) => {
             setMessage('');
         } catch (error) {
             console.error('Ошибка при отправке сообщения:', error);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -107,90 +90,99 @@ const Chat = ({ token, isDarkTheme }) => {
         }
     };
 
+    const formatMessage = (message) => {
+        const regex = /```([\s\S]*?)```/g;
+        const parts = message.split(regex);
+        return parts.map((part, index) => {
+            if (index % 2 === 0) {
+                return <span key={index}>{part}</span>;
+            } else {
+                return (
+                    <div key={index} style={{ margin: '10px 0' }}>
+                        <SyntaxHighlighter language="bash" style={dracula}>
+                            {part.trim()}
+                        </SyntaxHighlighter>
+                    </div>
+                );
+            }
+        });
+    };
+
     return (
         <div className="container">
             <h2 className="text-center mb-4">Чат</h2>
-            <div className="chat-container p-3 mb-4">
-                <div
-                    className="chat-history"
-                    style={{
-                        maxHeight: '300px',
-                        overflowY: 'auto',
-                        marginBottom: '20px',
-                        padding: '10px',
-                        backgroundColor: isDarkTheme ? '#545762' : '#ebebeb', // Фон чата
-                        color: isDarkTheme ? '#ffffff' : '#000000', // Цвет текста
-                        borderRadius: '10px',
-                    }}
-                >
-                    {history.length === 0 ? (
-                        <p className="text-center text-muted">История пуста</p>
-                    ) : (
-                        history.map((item, index) => (
-                            <div key={index} className="mb-3">
-                                <p>
-                                    <strong>Вы:</strong> {item.user}
-                                </p>
-                                <p>
-                                    <strong>Ответ:</strong> {item.bot}
-                                </p>
-                            </div>
-                        ))
-                    )}
-                </div>
-
-                <div className="chat-input">
-                    <div className="d-flex gap-2">
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Введите сообщение"
-                        />
-                        <button className="btn btn-primary" onClick={handleSend} disabled={loading}>
-                            {loading ? 'Отправляем...' : 'Отправить'}
-                        </button>
-                        <div style={{ position: 'relative', display: 'inline-block' }}>
-                            <button
-                                className="btn btn-secondary"
-                                style={{
-                                    cursor: 'pointer',
-                                    padding: '10px 20px',
-                                    backgroundColor: isDarkTheme ? '#6c757d' : '#e0e0e0',
-                                    color: isDarkTheme ? '#ffffff' : '#000000',
-                                    borderRadius: '5px',
-                                    border: 'none',
-                                    whiteSpace: 'nowrap',
-                                }}
-                                onClick={() => document.getElementById('fileInput').click()}
-                            >
-                                Загрузить файл... (в разработке)
-                            </button>
-                            <input
-                                id="fileInput"
-                                type="file"
-                                onChange={handleFileUpload}
-                                style={{
-                                    position: 'absolute',
-                                    left: 0,
-                                    top: 0,
-                                    opacity: 0,
-                                    width: '100%',
-                                    height: '100%',
-                                    cursor: 'pointer',
-                                }}
-                            />
+            <div
+                className="chat-history"
+                style={{
+                    maxHeight: '500px',
+                    overflowY: 'auto',
+                    marginBottom: '20px',
+                    padding: '10px',
+                    backgroundColor: isDarkTheme ? '#545762' : '#ebebeb',
+                    color: isDarkTheme ? '#ffffff' : '#000000',
+                    borderRadius: '10px',
+                    height: '60vh',
+                }}
+            >
+                {history.length === 0 ? (
+                    <p className="text-center text-muted">История пуста</p>
+                ) : (
+                    history.map((item, index) => (
+                        <div key={index} className="mb-3">
+                            <p>
+                                <span
+                                    style={{
+                                        color: isDarkTheme ? '#50b434' : '#50b434',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    Вы:
+                                </span>{' '}
+                                {item.user}
+                            </p>
+                            <p>
+                                <span
+                                    style={{
+                                        color: isDarkTheme ? '#d15050' : '#d15050',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    Ответ:
+                                </span>{' '}
+                                {formatMessage(item.bot)}
+                            </p>
+                        </div>
+                    ))
+                )}
+                {loading && (
+                    <div className="text-center mt-3">
+                        <div className="spinner-border text-light" role="status">
+                            <span className="sr-only">Загрузка...</span>
                         </div>
                     </div>
-                </div>
-                <button
-                    className="btn btn-danger w-100 mt-3"
-                    onClick={handleClearHistory}
-                >
-                    Очистить историю
-                </button>
+                )}
             </div>
+
+            <div className="chat-input">
+                <div className="d-flex gap-2">
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Введите сообщение"
+                    />
+                    <button className="btn btn-primary" onClick={handleSend} disabled={loading}>
+                        {loading ? 'Отправляем...' : 'Отправить'}
+                    </button>
+                </div>
+            </div>
+            <button
+                className="btn btn-danger w-100 mt-3"
+                onClick={handleClearHistory}
+            >
+                Очистить историю
+            </button>
         </div>
     );
 };
