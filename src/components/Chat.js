@@ -10,7 +10,7 @@ const Chat = ({ token, isDarkTheme }) => {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/chat/history', {
+                const response = await fetch('http://127.0.0.1:8000/chat-history', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
