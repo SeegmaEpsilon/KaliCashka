@@ -12,7 +12,8 @@ class User(Base):
     username = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
 
-    chat_history = relationship("ChatHistory", back_populates="user")
+    # Отношение к модели ChatHistory
+    chat_history = relationship("ChatHistory", back_populates="user", cascade="all, delete-orphan")
 
 
 # Модель для сообщений
@@ -39,10 +40,11 @@ class ChatHistory(Base):
     __tablename__ = "chat_history"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)  # Ссылка на user.id
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)  # ForeignKey связывает с таблицей User
     user_message = Column(String, nullable=False)
     bot_response = Column(String, nullable=False)
 
+    # Отношение к модели User
     user = relationship("User", back_populates="chat_history")
 
 

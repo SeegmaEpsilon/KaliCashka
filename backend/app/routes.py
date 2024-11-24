@@ -48,19 +48,33 @@ def protected_route(current_user: str = Depends(get_current_user)):
 
 
 @router.post("/chat")
-def chat(message: Message, current_user: int = Depends(get_current_user), db: Session = Depends(get_db)):
+def chat(message: Message, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     """
-    Эндпоинт для чата.
+    Эндпоинт для отправки сообщения в GigaChat.
     """
-    response = send_message_to_ai(user_id=current_user, message=message.message, db=db)
-    save_chat_history(user_id=current_user, user_message=message.message, bot_response=response)
+    user_id = current_user["username"]  # Извлекаем логин пользователя
+    response = send_message_to_ai(user_id, message.message, db)
     return {"response": response}
 
 
-@router.get("/chat-history/{user_id}")
-def get_user_chat_history(user_id: int, db: Session = Depends(get_db)):
+
+@router.get("/chat-history")
+def get_user_chat_history(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     """
-    Эндпоинт для получения истории чата пользователя.
+    Эндпоинт для получения истории чата текущего пользователя.
     """
-    print(f"db type: {type(db)}")  # Отладка
-    return db.query(ChatHistory).filter(ChatHistory.user_id == user_id).all()
+    username = current_user["username"]  # Извлекаем логин пользователя
+    history = db.query(ChatHistory).filter(ChatHistory.user_id == username).all()
+    return {"history": history}
+
+
+@router.delete("/chat-history")
+def clear_chat_history(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    """
+    Эндпоинт для очистки истории чата текущего пользователя.
+    """
+    username = current_user["username"]  # Используем логин пользователя
+    deleted_count = db.query(ChatHistory).filter(ChatHistory.user_id == username).delete()
+    db.commit()
+    return {"message": f"История чата очищена. Удалено записей: {deleted_count}"}
+

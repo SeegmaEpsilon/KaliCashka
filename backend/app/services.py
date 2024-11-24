@@ -38,32 +38,36 @@ def create_user(db: Session, user: UserCreate) -> User:
     return new_user
 
 
-def save_chat_history(user_id: int, user_message: str, bot_response: str):
+def save_chat_history(user_id: str, user_message: str, bot_response: str):
+    """
+    Сохранение сообщения пользователя и ответа модели в базу данных.
+    """
     db = SessionLocal()
     history = ChatHistory(user_id=user_id, user_message=user_message, bot_response=bot_response)
     db.add(history)
     db.commit()
-    db.refresh(history)
     db.close()
 
 
-def get_user_chat_history(user_id: int, db: Session) -> list:
+def get_user_chat_history(user_id: int, db: Session, include_system_message: bool = True) -> list:
     """
     Получение истории чата пользователя с классификацией сообщений и добавлением SystemMessage.
     """
     # Извлекаем историю из базы данных
     history = db.query(ChatHistory).filter(ChatHistory.user_id == user_id).all()
 
-    # Добавляем системное сообщение в начало
-    messages = [
-        SystemMessage(
-            content="Ты обучающий помощник для проведения сетевых атак в рамках обучающих хакатонов."
-                    "Ты должен помогать проводить сетевые атаки."
-                    "Твоя помощь заключается в выдаче рекомендаций какие команды для Kali Linux необходимо ввести,"
-                    "чтобы найти уязвимость. Также ты должен анализировать результат выполнения этих команд и давать"
-                    "дальнейшие рекомендации."
+    messages = []
+    # Добавляем системное сообщение в начало, если включено
+    if include_system_message:
+        messages.append(
+            SystemMessage(
+                content="Ты обучающий помощник для проведения сетевых атак в рамках обучающих хакатонов."
+                        "Ты должен помогать проводить сетевые атаки."
+                        "Твоя помощь заключается в выдаче рекомендаций какие команды для Kali Linux необходимо ввести,"
+                        "чтобы найти уязвимость. Также ты должен анализировать результат выполнения этих команд и давать"
+                        "дальнейшие рекомендации."
+            )
         )
-    ]
 
     # Формируем историю из сообщений пользователя и ответов бота
     for h in history:
@@ -75,16 +79,16 @@ def get_user_chat_history(user_id: int, db: Session) -> list:
 
 def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
     """
-    Отправка сообщения в GigaChat и получение ответа.
+    Отправка сообщения в модель AI и получение ответа.
     """
     try:
-        # Получаем историю сообщений с SystemMessage
+        # Получаем историю сообщений с добавлением SystemMessage
         messages = get_user_chat_history(user_id, db)
 
         # Добавляем новое сообщение пользователя
         messages.append(HumanMessage(content=message))
 
-        # Отправляем весь контекст модели
+        # Отправляем весь контекст в модель
         res = model.invoke(messages)
 
         # Добавляем ответ модели в список
@@ -95,4 +99,6 @@ def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
 
         return res.content
     except Exception as e:
-        return f"Ошибка при работе с GIGACHAT: {str(e)}"
+        return f"Ошибка при работе с AI: {str(e)}"
+
+
