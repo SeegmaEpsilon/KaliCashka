@@ -34,65 +34,112 @@ const Chat = ({ token, isDarkTheme }) => {
 
     const formatMessage = (text) => {
         if (!text) return null;
-
-        const codeRegex = /`([^`]+)`/g; // Регулярное выражение для нахождения текста в обратных кавычках
-        const bashRegex = /```bash([\s\S]*?)```/g; // Регулярное выражение для нахождения блоков bash
-        const parts = text.split(bashRegex);
-
+    
+        // Регулярные выражения
+        const boldRegex = /\*\*(.*?)\*\*/g; // Для текста в двойных звёздочках
+        const codeBlockRegex = /```([a-zA-Z]*)\n([\s\S]*?)```/g; // Для блоков кода с языковым идентификатором
+    
+        // Разделение текста на блоки и обработка
+        const parts = [];
+        let lastIndex = 0;
+    
+        text.replace(codeBlockRegex, (match, lang, code, offset) => {
+            // Добавляем текст перед блоком кода
+            if (offset > lastIndex) {
+                parts.push({ type: 'text', content: text.slice(lastIndex, offset) });
+            }
+    
+            // Добавляем сам блок кода
+            parts.push({ type: 'code', language: lang || 'Code', content: code.trim() });
+    
+            lastIndex = offset + match.length;
+        });
+    
+        // Добавляем оставшийся текст после последнего блока кода
+        if (lastIndex < text.length) {
+            parts.push({ type: 'text', content: text.slice(lastIndex) });
+        }
+    
+        // Рендер частей
         return parts.map((part, index) => {
-            if (index % 2 === 1) {
-                // Это блок bash
+            if (part.type === 'code') {
+                // Рендер блока кода
                 return (
-                    <pre
+                    <div
                         key={index}
                         style={{
-                            backgroundColor: '#2d2d2d',
-                            color: '#ffffff',
-                            padding: '8px',
-                            borderRadius: '5px',
-                            overflowX: 'auto',
+                            position: 'relative',
                             margin: '4px 0',
-                            lineHeight: '1.4',
-                            display: 'block',
                         }}
                     >
-                        {part.trim()}
-                    </pre>
+                        {/* Заголовок для языка */}
+                        <div
+                            style={{
+                                backgroundColor: '#444',
+                                color: '#fff',
+                                fontSize: '12px',
+                                padding: '2px 8px',
+                                borderTopLeftRadius: '5px',
+                                borderTopRightRadius: '5px',
+                                display: 'inline-block',
+                            }}
+                        >
+                            {part.language}
+                        </div>
+                        <pre
+                            style={{
+                                backgroundColor: '#2d2d2d',
+                                color: '#ffffff',
+                                padding: '8px',
+                                borderRadius: '5px',
+                                overflowX: 'auto',
+                                marginTop: '0',
+                                lineHeight: '1.4',
+                                display: 'block',
+                                whiteSpace: 'pre-wrap',
+                            }}
+                        >
+                            {part.content}
+                        </pre>
+                    </div>
                 );
-            }
-
-            // Это обычный текст с возможным выделением
-            return part
-                .split('\n') // Разделяем текст на строки
-                .filter((line) => line.trim() !== '') // Убираем пустые строки
-                .map((line, i) => {
-                    // Заменяем `что-то` на жирное подчеркивание
-                    const formattedLine = line.split(codeRegex).map((chunk, j) => {
-                        if (j % 2 === 1) {
-                            // Это текст между обратными кавычками
-                            return (
-                                <span
-                                    key={`${i}-${j}`}
-                                    style={{
-                                        fontWeight: 'bold',
-                                    }}
-                                >
-                                    {chunk}
-                                </span>
-                            );
-                        }
-                        return chunk; // Обычный текст
+            } else if (part.type === 'text') {
+                // Рендер обычного текста с выделением
+                return part.content
+                    .split('\n') // Разделяем на строки
+                    .filter((line) => line.trim() !== '') // Убираем пустые строки
+                    .map((line, i) => {
+                        const formattedLine = line.split(boldRegex).map((chunk, j) => {
+                            if (j % 2 === 1) {
+                                // Выделение жирным
+                                return (
+                                    <span
+                                        key={`${index}-${i}-${j}`}
+                                        style={{
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        {chunk}
+                                    </span>
+                                );
+                            }
+                            return chunk;
+                        });
+    
+                        return (
+                            <span key={`${index}-${i}`} style={{ margin: 0, padding: 0 }}>
+                                {formattedLine}
+                                <br />
+                            </span>
+                        );
                     });
-
-                    return (
-                        <span key={`${index}-${i}`} style={{ margin: 0, padding: 0 }}>
-                            {formattedLine}
-                            <br />
-                        </span>
-                    );
-                });
+            }
+            return null;
         });
     };
+    
+    
+    
 
     const handleSendDebounced = debounce(async (message, isCommand, token, setHistory) => {
         try {
