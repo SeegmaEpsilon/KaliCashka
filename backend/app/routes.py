@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from .models import UserCreate, UserResponse, Message, User, ChatHistory
@@ -65,7 +66,13 @@ def get_user_chat_history(db: Session = Depends(get_db), current_user: dict = De
     """
     username = current_user["username"]  # Извлекаем логин пользователя
     history = db.query(ChatHistory).filter(ChatHistory.user_id == username).all()
-    return {"history": history}
+
+    # Преобразуем объекты в JSON-совместимый формат
+    serialized_history = [
+        {"user": item.user_message, "bot": item.bot_response} for item in history
+    ]
+
+    return {"history": serialized_history}
 
 
 @router.delete("/chat-history")

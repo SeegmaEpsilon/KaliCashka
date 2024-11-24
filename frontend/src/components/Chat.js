@@ -165,7 +165,7 @@ const Chat = ({ token, isDarkTheme }) => {
                                 }}
                                 onClick={() => document.getElementById('fileInput').click()}
                             >
-                                Загрузить файл...
+                                Загрузить файл... (в разработке)
                             </button>
                             <input
                                 id="fileInput"
