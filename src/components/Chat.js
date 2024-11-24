@@ -188,7 +188,7 @@ const Chat = ({ token, isDarkTheme }) => {
                     className="btn btn-danger w-100 mt-3"
                     onClick={handleClearHistory}
                 >
-                    Очистить историю
+                    Очистить историю (в разработке)
                 </button>
             </div>
         </div>
