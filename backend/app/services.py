@@ -1,4 +1,5 @@
-import openai
+import paramiko
+from typing import Tuple
 from .config import AI_API_KEY
 from sqlalchemy.orm import Session
 from fastapi import Depends
@@ -102,3 +103,23 @@ def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
         return f"Ошибка при работе с AI: {str(e)}"
 
 
+def execute_command_on_kali(command: str) -> Tuple[str, str]:
+    """
+    Выполняет команду на удалённой машине Kali Linux через SSH.
+    """
+    import os
+    host = os.getenv("KALI_SSH_HOST")  # IP Kali Linux
+    port = int(os.getenv("KALI_SSH_PORT"))  # Порт SSH
+    username = os.getenv("KALI_SSH_USER")  # Имя пользователя SSH
+    password = os.getenv("KALI_SSH_PASSWORD")  # Пароль SSH
+
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    try:
+        client.connect(host, port, username, password)
+        stdin, stdout, stderr = client.exec_command(command)
+        output = stdout.read().decode('utf-8').strip()
+        error = stderr.read().decode('utf-8').strip()
+        return output, error
+    finally:
+        client.close()

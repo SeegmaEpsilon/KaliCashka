@@ -5,9 +5,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from .models import UserCreate, UserResponse, Message, User, ChatHistory
+from .models import UserCreate, UserResponse, Message, User, ChatHistory, CommandRequest
 from .database import SessionLocal, get_db
-from .services import create_user, save_chat_history, send_message_to_ai
+from .services import create_user, save_chat_history, send_message_to_ai, execute_command_on_kali
 from .auth import create_access_token, verify_password, get_current_user
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -58,7 +58,6 @@ def chat(message: Message, db: Session = Depends(get_db), current_user: dict = D
     return {"response": response}
 
 
-
 @router.get("/chat-history")
 def get_user_chat_history(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     """
@@ -84,4 +83,20 @@ def clear_chat_history(db: Session = Depends(get_db), current_user: dict = Depen
     deleted_count = db.query(ChatHistory).filter(ChatHistory.user_id == username).delete()
     db.commit()
     return {"message": f"История чата очищена. Удалено записей: {deleted_count}"}
+
+
+@router.post("/execute-command")
+def execute_command(
+    request: CommandRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Эндпоинт для выполнения команды на Kali Linux.
+    """
+    output, error = execute_command_on_kali(request.command)
+
+    if error:
+        raise HTTPException(status_code=500, detail=f"Ошибка выполнения команды: {error}")
+
+    return {"output": output}
 

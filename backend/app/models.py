@@ -21,6 +21,10 @@ class Message(BaseModel):
     message: str
 
 
+class CommandRequest(BaseModel):
+    command: str
+
+
 # Схема для ответа API (без пароля)
 class UserResponse(BaseModel):
     id: int
