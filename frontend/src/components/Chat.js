@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { debounce } from 'lodash';
 
 const Chat = ({ token, isDarkTheme }) => {
     const [message, setMessage] = useState('');
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
+    const chatContainerRef = useRef(null); // Ссылка на контейнер чата
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -15,7 +16,7 @@ const Chat = ({ token, isDarkTheme }) => {
                     },
                 });
                 const data = await response.json();
-                setHistory(data.history || []); // Убедимся, что история — массив
+                setHistory(data.history || []);
             } catch (error) {
                 console.error('Ошибка при загрузке истории:', error);
             }
@@ -23,6 +24,75 @@ const Chat = ({ token, isDarkTheme }) => {
 
         fetchHistory();
     }, [token]);
+
+    // Автоматическая прокрутка при первом рендере и обновлении истории
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [history]);
+
+    const formatMessage = (text) => {
+        if (!text) return null;
+
+        const codeRegex = /`([^`]+)`/g; // Регулярное выражение для нахождения текста в обратных кавычках
+        const bashRegex = /```bash([\s\S]*?)```/g; // Регулярное выражение для нахождения блоков bash
+        const parts = text.split(bashRegex);
+
+        return parts.map((part, index) => {
+            if (index % 2 === 1) {
+                // Это блок bash
+                return (
+                    <pre
+                        key={index}
+                        style={{
+                            backgroundColor: '#2d2d2d',
+                            color: '#ffffff',
+                            padding: '8px',
+                            borderRadius: '5px',
+                            overflowX: 'auto',
+                            margin: '4px 0',
+                            lineHeight: '1.4',
+                            display: 'block',
+                        }}
+                    >
+                        {part.trim()}
+                    </pre>
+                );
+            }
+
+            // Это обычный текст с возможным выделением
+            return part
+                .split('\n') // Разделяем текст на строки
+                .filter((line) => line.trim() !== '') // Убираем пустые строки
+                .map((line, i) => {
+                    // Заменяем `что-то` на жирное подчеркивание
+                    const formattedLine = line.split(codeRegex).map((chunk, j) => {
+                        if (j % 2 === 1) {
+                            // Это текст между обратными кавычками
+                            return (
+                                <span
+                                    key={`${i}-${j}`}
+                                    style={{
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    {chunk}
+                                </span>
+                            );
+                        }
+                        return chunk; // Обычный текст
+                    });
+
+                    return (
+                        <span key={`${index}-${i}`} style={{ margin: 0, padding: 0 }}>
+                            {formattedLine}
+                            <br />
+                        </span>
+                    );
+                });
+        });
+    };
 
     const handleSendDebounced = debounce(async (message, isCommand, token, setHistory) => {
         try {
@@ -33,22 +103,21 @@ const Chat = ({ token, isDarkTheme }) => {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({ command: message.substring(1) }), // Убираем "/"
+                    body: JSON.stringify({ command: message.substring(1) }),
                 });
 
                 if (response.ok) {
                     const responseData = await response.json();
-
                     const kaliMessage = `Kali: В результате выполнения команды "${message.substring(1)}" получился такой результат: ${responseData.output}`;
                     const aiMessage = `В результате выполнения команды "${message.substring(1)}" получился такой результат: ${responseData.output}. Проанализируй его.`;
 
-                    // Добавляем сообщение от Kali и сразу отправляем в AI
+                    // Добавляем сообщение пользователя
                     setHistory((prevHistory) => [
                         ...prevHistory,
-                        { user: `Вы: ${message}`, bot: kaliMessage },
+                        { user: `Вы: ${message}`, bot: null },
                     ]);
 
-                    // Отправляем запрос в AI
+                    // Ждём ответа от AI
                     const aiResponse = await fetch('http://127.0.0.1:8000/chat', {
                         method: 'POST',
                         headers: {
@@ -59,15 +128,19 @@ const Chat = ({ token, isDarkTheme }) => {
                     });
 
                     const aiResponseData = await aiResponse.json();
+
+                    // Добавляем сообщение бота
                     setHistory((prevHistory) => [
                         ...prevHistory,
-                        { user: kaliMessage, bot: aiResponseData.response },
+                        { user: null, bot: aiResponseData.response },
                     ]);
                 } else {
                     const errorData = await response.json();
+
+                    // Добавляем сообщение пользователя и ошибку
                     setHistory((prevHistory) => [
                         ...prevHistory,
-                        { user: message, bot: `Ошибка: ${errorData.detail || 'Неизвестная ошибка.'}` },
+                        { user: `Вы: ${message}`, bot: `Ошибка: ${errorData.detail || 'Неизвестная ошибка.'}` },
                     ]);
                 }
             } else {
@@ -81,9 +154,17 @@ const Chat = ({ token, isDarkTheme }) => {
                 });
 
                 const responseData = await response.json();
+
+                // Добавляем сообщение пользователя
                 setHistory((prevHistory) => [
                     ...prevHistory,
-                    { user: message, bot: responseData.response },
+                    { user: `Вы: ${message}`, bot: null },
+                ]);
+
+                // Добавляем ответ от бота
+                setHistory((prevHistory) => [
+                    ...prevHistory,
+                    { user: null, bot: responseData.response },
                 ]);
             }
         } catch (error) {
@@ -132,100 +213,92 @@ const Chat = ({ token, isDarkTheme }) => {
         <div className="container">
             <h2 className="text-center mb-4">Чат</h2>
             <div
-    className="chat-history"
-    style={{
-        maxHeight: '500px',
-        overflowY: 'auto',
-        marginBottom: '20px',
-        padding: '10px',
-        backgroundColor: isDarkTheme ? '#545762' : '#ebebeb',
-        color: isDarkTheme ? '#ffffff' : '#000000',
-        borderRadius: '10px',
-        height: '60vh',
-    }}
->
-    {history.length === 0 ? (
-        <p className="text-center text-muted">История пуста</p>
-    ) : (
-        history.map((item, index) => (
-            <div key={index} className="mb-3">
-                {/* Сообщение пользователя */}
-                {item.user && !item.user.startsWith('Kali:') && (
-                    <p style={{ marginBottom: '4px' }}>
-                        <span
-                            style={{
-                                color: isDarkTheme ? '#50b434' : '#50b434',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Вы:
-                        </span>{' '}
-                        {item.user}
-                    </p>
+                ref={chatContainerRef} // Привязка ссылки
+                className="chat-history"
+                style={{
+                    maxHeight: '500px',
+                    overflowY: 'auto',
+                    marginBottom: '20px',
+                    padding: '10px',
+                    backgroundColor: isDarkTheme ? '#545762' : '#ebebeb',
+                    color: isDarkTheme ? '#ffffff' : '#000000',
+                    borderRadius: '10px',
+                    height: '60vh',
+                }}
+            >
+                {history.length === 0 ? (
+                    <p className="text-center text-muted">История пуста</p>
+                ) : (
+                    history.map((item, index) => (
+                        <div key={index} className="mb-3">
+                            {item.user && (
+                                <p style={{ marginBottom: '8px' }}>
+                                    <span
+                                        style={{
+                                            color: isDarkTheme ? '#50b434' : '#50b434',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Вы:
+                                    </span>{' '}
+                                    {item.user.replace(/^Вы: /, '')}
+                                </p>
+                            )}
+                            {item.bot && (
+                                <p style={{ marginBottom: '8px' }}>
+                                    <span
+                                        style={{
+                                            color: isDarkTheme ? '#d15050' : '#d9534f',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Ответ:
+                                    </span>{' '}
+                                    {formatMessage(item.bot)}
+                                </p>
+                            )}
+                        </div>
+                    ))
                 )}
-
-                {/* Сообщение от Kali */}
-                {item.bot && item.bot.startsWith('Kali:') && (
-                    <p style={{ marginBottom: '4px' }}>
-                        <span
-                            style={{
-                                color: isDarkTheme ? '#4b83f5' : '#007bff',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Kali:
-                        </span>{' '}
-                        {item.bot.replace('Kali: ', '')}
-                    </p>
-                )}
-
-                {/* Сообщение от AI */}
-                {item.bot && !item.bot.startsWith('Kali:') && (
-                    <p style={{ marginBottom: '4px' }}>
-                        <span
-                            style={{
-                                color: isDarkTheme ? '#d15050' : '#d9534f',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            Ответ:
-                        </span>{' '}
-                        {item.bot}
-                    </p>
+                {loading && (
+                    <div className="text-center mt-3">
+                        <div className="spinner-border text-light" role="status">
+                            <span className="sr-only">Загрузка...</span>
+                        </div>
+                    </div>
                 )}
             </div>
-        ))
-    )}
-    {loading && (
-        <div className="text-center mt-3">
-            <div className="spinner-border text-light" role="status">
-                <span className="sr-only">Загрузка...</span>
-            </div>
-        </div>
-    )}
-</div>
-
 
             <div className="chat-input">
-                <div className="d-flex gap-2">
+                <div className="d-flex gap-2 align-items-stretch">
                     <input
                         type="text"
                         className="form-control"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Введите сообщение"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault(); // Предотвращает перенос строки
+                                handleSend(); // Вызывает функцию отправки
+                            }
+                        }}
+                        placeholder="Введите сообщение или команду. Команда должна начинаться с /"
                     />
-                    <button className="btn btn-primary" onClick={handleSend} disabled={loading}>
+                    <button
+                        className="btn btn-primary flex-grow-1"
+                        onClick={handleSend}
+                        disabled={loading}
+                    >
                         {loading ? 'Отправляем...' : 'Отправить'}
+                    </button>
+                    <button
+                        className="btn btn-danger flex-grow-1"
+                        onClick={handleClearHistory}
+                    >
+                        Очистить историю
                     </button>
                 </div>
             </div>
-            <button
-                className="btn btn-danger w-100 mt-3"
-                onClick={handleClearHistory}
-            >
-                Очистить историю
-            </button>
         </div>
     );
 };
