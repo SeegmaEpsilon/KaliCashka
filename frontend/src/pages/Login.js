@@ -24,10 +24,10 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
         }
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/login', {
+            const response = await axios.post('http://127.0.0.1:8000/login', new URLSearchParams({
                 username,
                 password,
-            });
+            }));
             const { access_token } = response.data;
             onLogin(access_token, username);
         } catch (err) {
