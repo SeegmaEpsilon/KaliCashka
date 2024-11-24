@@ -95,8 +95,8 @@ const Chat = ({ token, isDarkTheme }) => {
         if (!confirmed) return;
 
         try {
-            await fetch('http://127.0.0.1:8000/chat/clear', {
-                method: 'POST',
+            await fetch('http://127.0.0.1:8000/chat-history', {
+                method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -188,7 +188,7 @@ const Chat = ({ token, isDarkTheme }) => {
                     className="btn btn-danger w-100 mt-3"
                     onClick={handleClearHistory}
                 >
-                    Очистить историю (в разработке)
+                    Очистить историю
                 </button>
             </div>
         </div>
