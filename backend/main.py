@@ -18,7 +18,7 @@ app.include_router(router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Разрешённый источник (ваш фронтенд)
+    allow_origins=["http://localhost:3000"],  # Разрешённый источник (фронтенд)
     allow_credentials=True,
     allow_methods=["*"],  # Разрешённые методы (GET, POST, OPTIONS и т.д.)
     allow_headers=["*"],  # Разрешённые заголовки (например, Authorization)
