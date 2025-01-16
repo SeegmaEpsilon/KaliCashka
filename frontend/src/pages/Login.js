@@ -7,21 +7,9 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Фиктивные данные для разработчиков
-    const devUsername = 'dev';
-    const devPassword = 'devpass';
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true); // Включаем индикатор загрузки
-
-        // Проверяем фиктивные логин и пароль
-        if (username === devUsername && password === devPassword) {
-            const fakeToken = 'dev-token';
-            onLogin(fakeToken, 'Developer');
-            setLoading(false); // Выключаем индикатор загрузки
-            return;
-        }
 
         try {
             const response = await axios.post('http://127.0.0.1:8000/login', new URLSearchParams({
@@ -37,7 +25,7 @@ const Login = ({ onLogin, isDarkTheme, onSwitchToRegister }) => {
         }
     };
 
-
+	// Я понимаю что тупо хардкодить css в код, но пока так
     const loginStyle = {
         backgroundColor: isDarkTheme ? '#2d2f34' : '#f8f9fa',
         color: isDarkTheme ? '#ffffff' : '#000000',
