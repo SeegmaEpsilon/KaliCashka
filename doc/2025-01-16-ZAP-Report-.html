@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZAP by Checkmarx Scanning Report</title>
+<link
+	href="2025-01-16-ZAP-Report-/normalize/normalize.css" rel="stylesheet">
+<link
+	href="2025-01-16-ZAP-Report-/themes/original/main.css" rel="stylesheet">
+<link
+	href="2025-01-16-ZAP-Report-/themes/original/colors.css" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<h1>ZAP by Checkmarx Scanning Report</h1>
+		<p>
+			<span>Generated with</span> <a href="https://zaproxy.org"><img
+				src="2025-01-16-ZAP-Report-/zap32x32.png" alt="The ZAP logo" class="zap-logo">ZAP</a>
+			<span>on чт 16 янв. 2025, at 20:25:16</span>
+		</p>
+		<p>ZAP Version: 2.16.0</p>
+		<p>
+			ZAP by <a href="https://checkmarx.com/">Checkmarx</a>
+		</p>
+	</header>
+
+	<main>
+
+		<section id="contents" class="contents">
+			<h2>Contents</h2>
+			<nav>
+				<ol>
+					<li><a
+						href="#about-this-report">About this report</a>
+						<ol>
+							
+							<li><a
+								href="#report-parameters">Report parameters</a></li>
+						</ol></li>
+					<data-th-block>
+					<li><a
+						href="#summaries">Summaries</a>
+						<ol>
+							<li><a
+								href="#risk-confidence-counts">Alert counts by risk and confidence</a></li>
+							<li><a
+								href="#site-risk-counts">Alert counts by site and risk</a></li>
+							<li><a
+								href="#alert-type-counts">Alert counts by alert type</a></li>
+						</ol></li>
+					<li><a
+						href="#alerts">Alerts</a>
+						<ol>
+							
+							 
+							
+							
+							
+							
+							<li><a
+								href="#alerts--risk-2-confidence-3"><span>Risk</span>=<span
+									class="risk-level">Средний</span>, <span>Confidence</span>=<span
+									class="confidence-level">Высокий</span> <span>(2)</span></a></li>
+							
+							<li><a
+								href="#alerts--risk-2-confidence-2"><span>Risk</span>=<span
+									class="risk-level">Средний</span>, <span>Confidence</span>=<span
+									class="confidence-level">Средний</span> <span>(2)</span></a></li>
+							
+							
+							  
+							
+							
+							
+							
+							
+							
+							<li><a
+								href="#alerts--risk-1-confidence-2"><span>Risk</span>=<span
+									class="risk-level">Низкий</span>, <span>Confidence</span>=<span
+									class="confidence-level">Средний</span> <span>(2)</span></a></li>
+							
+							
+							  
+							
+							
+							
+							
+							
+							
+							<li><a
+								href="#alerts--risk-0-confidence-2"><span>Risk</span>=<span
+									class="risk-level">Информационный</span>, <span>Confidence</span>=<span
+									class="confidence-level">Средний</span> <span>(2)</span></a></li>
+							
+							
+							  
+						</ol></li>
+					<li><a
+						href="#appendix">Appendix</a>
+						<ol>
+							<li><a
+								href="#alert-types">Alert types</a></li>
+						</ol></li>
+					</data-th-block>
+				</ol>
+			</nav>
+		</section>
+
+		<section
+			id="about-this-report" class="about-this-report">
+			<h2>About this report</h2>
+
+			
+
+			<section
+				id="report-parameters">
+				<h3>Report parameters</h3>
+				<div class="report-parameters--container">
+					<h4>Contexts</h4>
+					
+					
+					<p>No contexts were selected, so all contexts were included by default.</p>
+					  
+
+					<h4>Sites</h4>
+					
+					<p>The following sites were included:</p>
+					<ul class="sites-list">
+						<li><span class="site">http://localhost:3000</span></li>
+					</ul>
+					
+					<p>(If no sites were selected, all sites were included by default.)</p>
+					<p>An included site must also be within one of the included contexts for its data to be included in the report.</p>
+
+					<h4>Risk levels</h4>
+					<p>
+						<span>Included</span>:
+						 
+						<span class="included-risk-codes"><span class="risk-level">Высокий</span>, <span class="risk-level">Средний</span>, <span class="risk-level">Низкий</span>, <span class="risk-level">Информационный</span></span>
+					</p>
+					<p>
+						<span>Excluded</span>:
+						 <span>None</span>
+						
+					</p>
+
+					<h4>Confidence levels</h4>
+					<p>
+						<span>Included</span>:
+						
+						
+						<span class="included-confidence-codes"><span class="confidence-level">Пользователь подтвержден </span>, <span class="confidence-level">Высокий</span>, <span class="confidence-level">Средний</span>, <span class="confidence-level">Низкий</span></span>
+					</p>
+					<p>
+						<span>Excluded</span>:
+						
+						
+						<span class="included-confidence-codes"> <span class="confidence-level">Пользователь подтвержден </span>, <span class="confidence-level">Высокий</span>, <span class="confidence-level">Средний</span>, <span class="confidence-level">Низкий</span>, <span class="confidence-level">Ложно-положительное</span></span>
+					</p>
+				</div>
+			</section>
+		</section>
+
+		
+		<section>
+			
+		</section>
+		
+		<section id="summaries" class="summaries">
+			<h2>Summaries</h2>
+
+			<section
+				id="risk-confidence-counts">
+				<h3>Alert counts by risk and confidence</h3>
+				<table class="risk-confidence-counts-table">
+					<caption>
+						<p>This table shows the number of alerts for each level of risk and confidence included in the report.</p>
+						<p>(The percentages in brackets represent the count as a percentage of the total number of alerts included in the report, rounded to one decimal place.)</p>
+					</caption>
+					<colgroup>
+						<col>
+						<col>
+					</colgroup>
+					<colgroup>
+						<col
+							style="width: 14.0%"><col
+							style="width: 14.0%"><col
+							style="width: 14.0%"><col
+							style="width: 14.0%">
+						<col style="width: 14.0%">
+					</colgroup>
+					<thead>
+						<tr>
+							<td colspan="2" rowspan="2"></td>
+							<th scope="colgroup"
+								colspan="5">Confidence</th>
+						</tr>
+						<tr>
+							<th scope="col">Пользователь подтвержден </th>
+							<th scope="col">Высокий</th>
+							<th scope="col">Средний</th>
+							<th scope="col">Низкий</th>
+							<th scope="col">Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="rowgroup"
+								rowspan="5">Risk</th>
+							<th scope="row">Высокий</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>0</span><br> <span class="additional-info-percentages">(0,0 %)</span></td>
+						</tr>
+						<tr>
+							
+							<th scope="row">Средний</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>2</span><br> <span
+								class="additional-info-percentages">(25,0 %)</span></td>
+							<td><span>2</span><br> <span
+								class="additional-info-percentages">(25,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>4</span><br> <span class="additional-info-percentages">(50,0 %)</span></td>
+						</tr>
+						<tr>
+							
+							<th scope="row">Низкий</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>2</span><br> <span
+								class="additional-info-percentages">(25,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>2</span><br> <span class="additional-info-percentages">(25,0 %)</span></td>
+						</tr>
+						<tr>
+							
+							<th scope="row">Информационный</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>2</span><br> <span
+								class="additional-info-percentages">(25,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>2</span><br> <span class="additional-info-percentages">(25,0 %)</span></td>
+						</tr>
+						<tr>
+							<th scope="row">Total</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>2</span><br> <span
+								class="additional-info-percentages">(25,0 %)</span></td>
+							<td><span>6</span><br> <span
+								class="additional-info-percentages">(75,0 %)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0,0 %)</span></td>
+							<td><span>8</span><br> <span
+								class="additional-info-percentages">(100%)</span></td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section
+				id="site-risk-counts">
+				<h3>Alert counts by site and risk</h3>
+				<table class="site-risk-counts-table">
+					<caption>
+						<p>This table shows, for each site for which one or more alerts were raised, the number of alerts raised at each risk level.</p>
+						<p>Alerts with a confidence level of &quot;False Positive&quot; have been excluded from these counts.</p>
+						<p>(The numbers in brackets are the number of alerts raised for the site at or above that risk level.)</p>
+					</caption>
+					<colgroup>
+						<col>
+						<col>
+					</colgroup>
+					<colgroup>
+						<col
+							style="width: 16.25%"><col
+							style="width: 16.25%"><col
+							style="width: 16.25%"><col
+							style="width: 16.25%">
+					</colgroup>
+					<thead>
+						<tr>
+							<td colspan="2" rowspan="2"></td>
+							<th scope="colgroup" colspan="4">Risk</th>
+						</tr>
+						<tr>
+							<th scope="col">
+								<span>Высокий</span><br>  <span
+									class="additional-info-percentages">(= Высокий)</span>  
+							</th>
+							<th scope="col">
+								<span>Средний</span><br>   <span
+									class="additional-info-percentages">(&gt;= Средний)</span> 
+							</th>
+							<th scope="col">
+								<span>Низкий</span><br>   <span
+									class="additional-info-percentages">(&gt;= Низкий)</span> 
+							</th>
+							<th scope="col">
+								<span>Информационный</span><br>   <span
+									class="additional-info-percentages">(&gt;= Информационный)</span> 
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="rowgroup"
+								rowspan="1">Site</th>
+							<th scope="row">http://localhost:3000</th>
+							
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0)</span></td>
+							<td><span>4</span><br> <span
+								class="additional-info-percentages">(4)</span></td>
+							<td><span>2</span><br> <span
+								class="additional-info-percentages">(6)</span></td>
+							<td><span>2</span><br> <span
+								class="additional-info-percentages">(8)</span></td>
+							
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section
+				id="alert-type-counts">
+				<h3>Alert counts by alert type</h3>
+				<table class="alert-type-counts-table">
+					<caption>
+						<p>This table shows the number of alerts of each alert type, together with the alert type&#39;s risk level.</p>
+						<p>(The percentages in brackets represent each count as a percentage, rounded to one decimal place, of the total number of alerts included in this report.)</p>
+					</caption>
+					<thead>
+						<tr>
+							<th scope="col">Alert type</th>
+							<th scope="col">Risk</th>
+							<th scope="col">Count</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-0">CSP: Директива подстановочного знака </a></th>
+							<td class="risk-level">Средний</td>
+							<td><span>2</span><br> <span
+								class="additional-info-percentages">(25,0 %)</span></td>
+						</tr>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-1">Заголовок Content Security Policy (CSP) не задан</a></th>
+							<td class="risk-level">Средний</td>
+							<td><span>1</span><br> <span
+								class="additional-info-percentages">(12,5 %)</span></td>
+						</tr>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-2">Междоменная неправильная конфигурация </a></th>
+							<td class="risk-level">Средний</td>
+							<td><span>5</span><br> <span
+								class="additional-info-percentages">(62,5 %)</span></td>
+						</tr>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-3">Отсутствует заголовок (Header) для защиты от кликджекинга </a></th>
+							<td class="risk-level">Средний</td>
+							<td><span>1</span><br> <span
+								class="additional-info-percentages">(12,5 %)</span></td>
+						</tr>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-4">Заголовок X-Content-Type-Options отсутствует </a></th>
+							<td class="risk-level">Низкий</td>
+							<td><span>3</span><br> <span
+								class="additional-info-percentages">(37,5 %)</span></td>
+						</tr>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-5">Сервер утекает информацию через поля заголовка HTTP-ответа &quot;X-Powered-By&quot; </a></th>
+							<td class="risk-level">Низкий</td>
+							<td><span>5</span><br> <span
+								class="additional-info-percentages">(62,5 %)</span></td>
+						</tr>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-6">Раскрытие информации - подозрительные комментарии </a></th>
+							<td class="risk-level">Информационный</td>
+							<td><span>13</span><br> <span
+								class="additional-info-percentages">(162,5 %)</span></td>
+						</tr>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-7">Современное веб-приложение </a></th>
+							<td class="risk-level">Информационный</td>
+							<td><span>1</span><br> <span
+								class="additional-info-percentages">(12,5 %)</span></td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th scope="row">Total</th>
+							<td></td>
+							<td>8</td>
+						</tr>
+					</tfoot>
+				</table>
+			</section>
+		</section>
+
+		<section id="alerts" class="alerts">
+			<h2>Alerts</h2>
+			<ol>
+				
+				 
+				 
+				
+				
+				<li id="alerts--risk-2-confidence-3">
+					<h3>
+						<span>Risk</span>=<span
+							class="risk-level">Средний</span>, <span>Confidence</span>=<span
+							class="confidence-level">Высокий</span> <span>(2)</span>
+					</h3>
+					<ol>
+						
+						<li class="alerts--site-li">
+							<h4>
+								<span class="site">http://localhost:3000</span> <span>(2)</span>
+							</h4>
+							<ol>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-0">CSP: Директива подстановочного знака </a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:3000/sitemap.xml</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				<li>
+					<span><a href="https://cwe.mitre.org/data/definitions/693.html">CWE-693</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">OWASP_2021_A05</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-top-ten/2017/A6_2017-Security_Misconfiguration.html">OWASP_2017_A06</a></span> 
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>Политика безопасности контента (CSP) - это дополнительный уровень безопасности, который помогает обнаруживать и смягчать определенные типы атак. </p>
+
+<p>Включая (но не ограничиваясь) межсайтовыми сценариями (XSS) и атаками путем внедрения данных. </p>
+
+<p>Эти атаки используются для всего, от кражи данных до повреждения сайта </p>
+
+<p>или распространения вредоносного ПО. </p>
+
+<p>CSP предоставляет набор стандартных HTTP-заголовков, </p>
+
+<p>которые позволяют владельцам веб-сайтов объявлять утвержденные источники контента, </p>
+
+<p>которые браузерам следует разрешить загружать на эту страницу - охватываемые типы - это JavaScript, CSS, HTML-фреймы, шрифты, изображения и встраиваемые объекты, такие как Java-апплеты, ActiveX, аудио и видео файлы. </p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Other info</th>
+		<td> 
+<p>The following directives either allow wildcard sources (or ancestors), are not defined, or are overly broadly defined:</p>
+
+<p>frame-ancestors, form-actionДирективы: frame-ancestors, form-action входят в число директив, которые не возвращаются к default-src, их отсутствие или исключение равносильно разрешению чего-либо.</p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (240 bytes)</summary>
+				
+				<pre><code>GET http://localhost:3000/sitemap.xml HTTP/1.1
+host: localhost:3000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+pragma: no-cache
+cache-control: no-cache
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (393 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 404 Not Found
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: *
+Access-Control-Allow-Headers: *
+Content-Security-Policy: default-src &#39;none&#39;
+X-Content-Type-Options: nosniff
+Content-Type: text/html; charset=utf-8
+Content-Length: 150
+Vary: Accept-Encoding
+Date: Thu, 16 Jan 2025 14:21:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+</code></pre>
+				
+				
+			</details> <details class="response-body" open="open">
+				<summary>Response body (150 bytes)</summary>
+				
+				<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;pre&gt;Cannot GET /sitemap.xml&lt;/pre&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Parameter</th>
+		<td><pre><code>Content-Security-Policy</code></pre></td>
+	</tr>
+	
+	<tr>
+		<th scope="row">Evidence</th>
+		<td><pre><code>default-src &#39;none&#39;</code></pre></td>
+	</tr>
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Убедитесь, что ваш веб-сервер, сервер приложений, балансировщик нагрузки и т. д. правильно настроены для установки заголовка Content-Security-Policy. </p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-1">Заголовок Content Security Policy (CSP) не задан</a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:3000</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				<li>
+					<span><a href="https://cwe.mitre.org/data/definitions/693.html">CWE-693</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">OWASP_2021_A05</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-top-ten/2017/A6_2017-Security_Misconfiguration.html">OWASP_2017_A06</a></span> 
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>Политика безопасности содержимого (CSP) — это дополнительный уровень безопасности, который помогает обнаруживать и смягчать определенные типы атак, включая межсайтовые сценарии (XSS) и атаки с внедрением данных. Эти атаки используются для всего: от кражи данных до порчи сайта или распространения вредоносных программ. CSP предоставляет набор стандартных HTTP-заголовков, которые позволяют владельцам веб-сайтов объявлять утвержденные источники контента, которые браузеры должны разрешить загружать на эту страницу. Охватываемые типы включают JavaScript, CSS, HTML-фреймы, шрифты, изображения и встраиваемые объекты, такие как апплеты Java. ActiveX, аудио и видео файлы.</p>
+ </td>
+	</tr>
+	
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (228 bytes)</summary>
+				
+				<pre><code>GET http://localhost:3000 HTTP/1.1
+host: localhost:3000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+pragma: no-cache
+cache-control: no-cache
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (374 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: *
+Access-Control-Allow-Headers: *
+Content-Type: text/html; charset=utf-8
+Accept-Ranges: bytes
+Content-Length: 1368
+ETag: W/&quot;558-UzzGoRO1R21PyIyzXoPHhVjhJOs&quot;
+Vary: Accept-Encoding
+Date: Thu, 16 Jan 2025 14:21:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+</code></pre>
+				
+				
+			</details> <details class="response-body" open="open">
+				<summary>Response body (1368 bytes)</summary>
+				
+				<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;link rel=&quot;icon&quot; href=&quot;/favicon.ico&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;meta name=&quot;description&quot; content=&quot;Web site created using create-react-app&quot; /&gt;
+    &lt;!--
+      Notice the use of  in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike &quot;/favicon.ico&quot; or &quot;favicon.ico&quot;, &quot;/favicon.ico&quot; will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    --&gt;
+    &lt;title&gt;React App&lt;/title&gt;
+  &lt;script defer src=&quot;/static/js/bundle.js&quot;&gt;&lt;/script&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;noscript&gt;You need to enable JavaScript to run this app.&lt;/noscript&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the &lt;body&gt; tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	
+	
+	
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Ensure that your web server, application server, load balancer, etc. is configured to set the Content-Security-Policy header.</p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+							</ol>
+						</li>
+						
+					</ol>
+				</li>
+				
+				<li id="alerts--risk-2-confidence-2">
+					<h3>
+						<span>Risk</span>=<span
+							class="risk-level">Средний</span>, <span>Confidence</span>=<span
+							class="confidence-level">Средний</span> <span>(2)</span>
+					</h3>
+					<ol>
+						
+						<li class="alerts--site-li">
+							<h4>
+								<span class="site">http://localhost:3000</span> <span>(2)</span>
+							</h4>
+							<ol>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-2">Междоменная неправильная конфигурация </a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:3000/favicon.ico</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				<li>
+					<span><a href="https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control.html">OWASP_2017_A05</a></span> 
+				</li>
+				<li>
+					<span><a href="https://cwe.mitre.org/data/definitions/264.html">CWE-264</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/">OWASP_2021_A01</a></span> 
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>Web browser data loading may be possible, due to a Cross Origin Resource Sharing (CORS) misconfiguration on the web server.</p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Other info</th>
+		<td> 
+<p>Неправильная конфигурация CORS на веб-сервере разрешает междоменные запросы чтения из произвольных сторонних доменов </p>
+
+<p>с использованием неаутентифицированных API в этом домене. </p>
+
+<p>Однако реализации веб-браузера не разрешают произвольным третьим сторонам читать ответ от аутентифицированных API. </p>
+
+<p>Это несколько снижает риск. </p>
+
+<p>Эта неправильная конфигурация может быть использована злоумышленником для доступа к данным, </p>
+
+<p>которые доступны без аутентификации, но которые используют другую форму безопасности, </p>
+
+<p>такую как белый список IP-адресов. </p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (272 bytes)</summary>
+				
+				<pre><code>GET http://localhost:3000/favicon.ico HTTP/1.1
+host: localhost:3000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+pragma: no-cache
+cache-control: no-cache
+referer: http://localhost:3000
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (426 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: *
+Access-Control-Allow-Headers: *
+Accept-Ranges: bytes
+Cache-Control: public, max-age=0
+Last-Modified: Sun, 24 Nov 2024 13:16:09 GMT
+ETag: W/&quot;f1e-1935e50bbfe&quot;
+Content-Type: image/x-icon
+Content-Length: 3870
+Vary: Accept-Encoding
+Date: Thu, 16 Jan 2025 14:21:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+</code></pre>
+				
+				
+			</details> <details class="response-body">
+				<summary>Response body (3870 bytes)</summary>
+				
+				<pre><code>         ã  F          )         9  5  @@     °  n  PNG
+
+   IHDR         (-S   äPLTE&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2PX=r)7;*:&gt;H¤-BGE8do5Xb6[eK®K¯1MU9gs3S\I§:gt&#39;03@{V¹ÔT´ÏA}V»Ö@y6\fH¦-CII¨E+;@7_i7_jFJ«K°H£-BHaÚû,@FCL³&amp;.0W½ÙN£ºI¨$)+BJªR¯È?v&gt;s&gt;uS±Ê=qP©ÁP¨ÀP§¿,?D4U^%+-M ¶K®%+,2OX+&lt;AL²#&amp;&amp;D%,.I©vôTö   tRNSIæçJäeÀe¦   ©IDATxMµZEAÿÙ³	îî%R¡ïßáTThÇG»,Á®Å=²ÒîmífímnfA$â&gt;!¦gºôHg½EßÜµ}	Ý»ýº¼kdú§¯JoÎ3æL&quot;J¹ ÌÕüQ$âçÄ¼ffµ,é5i9Ì¯H¨/mBwÍÜw;DØ+&amp;W«ª¹¨Dôo@Ê´RI©ÐB¡om.Û³À    IEND®B`PNG
+
+   IHDR         ×©ÍÊ  ePLTE&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2RZN¢¹J«3R[J¬)59YÁÞ0KS4W`Q«ÄL²%+-0JR)6::gtC&quot;##?vU·Ñ?w&lt;n{&amp;-/YÂß=q:iuBA}A{B/IPP§¿=qK®_ÔóL³$();lzR¯ÉaÚûI¨ZÆã3U^1MU3T]ZÅâI§X¿ÜF-BGP¨À6[e,@E5ZdO§¿-BHX¿Û+=AW¾Ú,@FW¼ØQªÃ?vW¼×+&lt;A@y&quot;#$\Ìê4Wa\ÌëS²Ì$(*.EL^ÑñVºÕ6]h#$%G¡#&amp;&#39;;jwV¹Ô-CIL±ZÄá^Ðï&gt;uS°Ê/HNM ·_Õõ\ËéM ¶8doDD&gt;t+=B[Èæ,&gt;C&gt;t&lt;o}@y0LS.EKT´Î$&#39;(%,.A~W½ÙC%+,\ÊèC!ä   tRNSíîG¾Ö  OIDATxlÃB¶Qu´ß_È³&lt;Ë¦Ýveê²óa6AÎ¾ûv¢{@Î E&#39; Þd IÕ!çí  ðCÔTþg  1ÂE(ÏñSQsâiÄZÿ·V¹ Ð)ég!ªhÎùtéº-i}µµ&lt;Õ?¶lBZaÄ´4{DÓâ»_e8¥yÇ­À3)¥?°f;8.ã¤tÌ=å;	:ã52fKZìlù¨ØÍ9.#ÒAÁqÌúÛ®£Vÿ`=$¬Â?_¶¾®ÔqMç.ïJ$
+?^q÷ñíÛï.},ìsæÝ_TttÔ¾ 1#/(ì-[è`è`ÌÚïÅðZd5?ÎebZ¿Þi.ÛæìqÎ+1°}Â5ù  ïçd¨GÏø    IEND®B`PNG
+
+   IHDR           D¤Æ  APLTE   &quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2RZVºÖ_ÔôU·Ñ=r$()&#39;25]ÎíC0LS&lt;o}XÀÜX¿Û0JQ=p~D&lt;n{VºÕE8do_ÔóEFH¥9dp_ÕõH¤I¨F6[e`Ö÷`×øL³/GM_ÓòU¸Ó&#39;02P©Á/IPPªÂX¿Ü&amp;/1;ly3R[`ØøG¡T³Í\ÌêaÚû1OW&quot;##Q«ÄaÙúR®Ç=q`Öö.EL+=ATµÐ-CIK®#&amp;&#39;C^ÐïI¨&amp;.04U^^Ñð@yZÇä$(*[Éç^Ññ,?DR¯É&quot;#$1NV1MTD&gt;u;kxG R¯È/HN&amp;-/@y&gt;s&gt;t@z]ÍìP¨À$&#39;(D]Ïî&lt;n|0JRU·Ò×\¼   	tRNS %­ñ&#39;ïó(ò~ÑÝè  IDATxC1F_Ý¿MmÛ¶4¶m{ÿ¤nçáÓ	®A$à$b HeøTãWÄÂhh´:PtZQ«0@.`Þ`4-V`³Zì&amp;A#ÁébkÝÄãñúØ&gt;.&#39;&#39;ø`C$FØÏ	(±x&quot;6XácTÚéL§@Iù;d d-¹|¾P,È9¡R­ÕÍf3¢¿F½VmMíX§ÚíÍç@Y7ÎõºÕN¬=åÈÊªu}Ö¬«+eaiq ¤Ö76­íÝ=hûZìíîlë}á¨Ê±¥[F«I9A¹k9¥Öëä3¢Ã9Î¡óqB~Øáb¸ÃåU_¸^Ü [·ôwý{zvzÙ(£(£(þfòqÉGÉïkñÏçY¾ÿªfäòÇ~à:*4ÓQ\O&gt; ¼&lt;×úW£éÍZ|ÞÅ7ñïjTÔäãn½»¢®`$Hð+ò¿GOñûð*èxø¥X*|^ÿd    IEND®B`PNG
+
+   IHDR   @   @   ·ì  :PLTE   &quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;%+-@yW¼×`×ø^ÑñS²ÌC,&gt;C*8&lt;XÁÝaÚûaÙùMµ+&lt;AaÙúXÀÜ#%%TµÐL´=q&gt;uK°`ÖöA}L±8do=r%+,@y^ÐïS²Ë)59=qP©ÁU·Ò&quot;#$PªÂ\Êè0JQQªÃ&quot;##U·Ñ#&amp;&amp;_Ôô&gt;t&gt;s`Øø_Ôó5Yc1OW5Zd1NV+=B1MU+;@/GM\Ìê*;?3S\)8&lt;2RZ_Õõ+=A]Ïî,@F,@E&amp;-/0KS7alO¦¾9dp8amB~EP¨ÀN¢¹&#39;023T]]Îí?x3U^C6\gU¸Ó&amp;.0D7_iR­ÆH¥I¨M ¶$(*?vZÆãX¿Ü-AG#$%[Éç8co[ÈæW½ÙC&#39;25?v8bn%*+L²N£º2PX)7;=p~(58^ÒòP§¿4WaQ«ÄT´Ï0JRQ¬ÅT´ÎI¨6]hR¯ÉT³Í0LSF9eqEE9gsFC#&amp;&#39;\Ëé`Ö÷&amp;/16\fBA{R®Ç]Íì(47%,.*:&gt;*9=9fr:gt7^iU¶Ð?wZÇäX¿Û^ÑðQ­ÅH£)6:V¹Ô&#39;034U^E.EL.FMK®@zS×   tRNS *×øÖý	»½+üùóÔ,ØúôÀ=V  IDATx¤ËµC! ÐïC|ÿãÚ^yR]ÕMÛáO]ßÔÕÝ0NÈ2ÍËí¿&quot;ªª¢(0Vã(ÀY%PDT-~(m¬ó!âKÞY£~´üIÒf{³ÛÞáa¼§§ô3ÕOp&amp;Ð¤¡ x÷#j­ôÚ¶mméòc)]m¤É)Æ§gfçhk²ñÎÒ ægg¦ÇìÐ+XÅêuiyV×ª·k«°²\[ü:,Ø6ØÜjÄ²;»&quot;»;°×XùþÛfÁáÇÍûýSÎÎÏÏ8=Þo¾;æèÐ(öÓ¥BkÔeûÍ\7p+mîîáþNÚ&lt;ÀQðOÒæùô³´yg»ttÐëoý½£ìVð»Òäsýü¬ø&amp;_ðaüïV~à·Ö?­*8àQ ;8¥Á,¸¤f¥1Üx¤×§ñ*øÑA¯Ôð°a#±³¶¦#nPi+¼¶CÈ,ÆèäÍ_áNbÑáÃ¸ç HB*ÚÒ¦ L( ^&lt;ñÃL6pJ¾PÉ¥©¢%&quot;R,ä9Èe3eRËa1(
+¢ßqÇ8Ù´mKË±mÆ¶mÛü·yi!èÎªYÏuë ÀÏ_Àï?i÷ý+òÄA|ù{´?¿_En).JËD¤&lt;
+©¬¢Z\Ts©R*(	¯©JuX/4J9¡5·DEµ4kÇ4&amp;i¥V4Ú¡®Ð¯vsf:àg,¢èBC»î$¶ºÍùîá@ôI_?&lt;!^ÈàÓ½ÇöäõB%Làw±FD1Á¨(F±øH%0Æ±¿ÅØ(¢0ÅÄ&#39;ÅæN.0u@íYPWìIüaNâKÄ?ðÓµ=ev/c±Ó0c0÷2Êë:06R-uÒÄ­\QÌ¶ää´¼µ6R#ÆF³6Òñ·rÕ­ìuæmâðÂIñi~ Åü ÃsPþ&quot;± ó¼eiyå£ËPàãÊò§¡ÝÒ,S]U¦ºVªÖ©®Z¦êoëë·xzãâÆSnm¬{ÚºwaÙÏÅ»´Ýõ(mg/®þå½À¿¼û[§b³µq¶Å&amp;Õ¯¹$ñzÈH&gt;aÌKT1/æø1O0¾.hÍYþAÓö£
+-ê&gt;Ûº«¢XÕ¢î}ß¨ëÛÑ;ÃöN´ØvÅýÎ¸ÿ1 ë×ÄO@&amp;v/Äþ_ö\ôÇ\í.½+0;!fÊ¦´Ó%Â JY·OÂ&#39;/Å]_;ßÀ&#39;&quot;&amp;Nªn	aQ^ cx¦AáÒ    IEND®B`</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	
+	
+	<tr>
+		<th scope="row">Evidence</th>
+		<td><pre><code>Access-Control-Allow-Origin: *</code></pre></td>
+	</tr>
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Убедитесь, что конфиденциальные данные недоступны без аутентификации </p>
+
+<p>(например, с помощью белого списка IP-адресов).</p>
+
+<p>Настройте HTTP-заголовок «Access-Control-Allow-Origin» для более ограниченного набора доменов </p>
+
+<p>или полностью удалите все заголовки CORS, </p>
+
+<p>чтобы разрешить веб-браузеру применять ту же политику происхождения (SOP) </p>
+
+<p>более ограничительным образом. </p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-3">Отсутствует заголовок (Header) для защиты от кликджекинга </a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:3000</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				<li>
+					<span><a href="https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/11-Client-side_Testing/09-Testing_for_Clickjacking">WSTG-v42-CLNT-09</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">OWASP_2021_A05</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-top-ten/2017/A6_2017-Security_Misconfiguration.html">OWASP_2017_A06</a></span> 
+				</li>
+				<li>
+					<span><a href="https://cwe.mitre.org/data/definitions/1021.html">CWE-1021</a></span> 
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>The response does not protect against &#39;ClickJacking&#39; attacks. It should include either Content-Security-Policy with &#39;frame-ancestors&#39; directive or X-Frame-Options.</p>
+ </td>
+	</tr>
+	
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (228 bytes)</summary>
+				
+				<pre><code>GET http://localhost:3000 HTTP/1.1
+host: localhost:3000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+pragma: no-cache
+cache-control: no-cache
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (374 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: *
+Access-Control-Allow-Headers: *
+Content-Type: text/html; charset=utf-8
+Accept-Ranges: bytes
+Content-Length: 1368
+ETag: W/&quot;558-UzzGoRO1R21PyIyzXoPHhVjhJOs&quot;
+Vary: Accept-Encoding
+Date: Thu, 16 Jan 2025 14:21:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+</code></pre>
+				
+				
+			</details> <details class="response-body" open="open">
+				<summary>Response body (1368 bytes)</summary>
+				
+				<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;link rel=&quot;icon&quot; href=&quot;/favicon.ico&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;meta name=&quot;description&quot; content=&quot;Web site created using create-react-app&quot; /&gt;
+    &lt;!--
+      Notice the use of  in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike &quot;/favicon.ico&quot; or &quot;favicon.ico&quot;, &quot;/favicon.ico&quot; will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    --&gt;
+    &lt;title&gt;React App&lt;/title&gt;
+  &lt;script defer src=&quot;/static/js/bundle.js&quot;&gt;&lt;/script&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;noscript&gt;You need to enable JavaScript to run this app.&lt;/noscript&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the &lt;body&gt; tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Parameter</th>
+		<td><pre><code>x-frame-options</code></pre></td>
+	</tr>
+	
+	
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Современные веб-браузеры поддерживают Content-Security-Policy и заголовки HTTP X-Frame-Options.Убедитесь, что один из них установлен на всех веб-страницах, возвращаемых вашим сайтом/приложением.Если вы ожидаете, что страница будет обрамлена только страницами на вашем сервере (например, это часть FRAMESET), вам следует использовать SAMEORIGIN, в противном случае, если вы никогда не ожидаете, что страница будет обрамлена, вам следует использовать DENY.В качестве альтернативы рассмотрите возможность реализации директивы Content Security Policy «frame-ancestors».</p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+							</ol>
+						</li>
+						
+					</ol>
+				</li>
+				
+				
+				  
+				 
+				
+				
+				
+				
+				<li id="alerts--risk-1-confidence-2">
+					<h3>
+						<span>Risk</span>=<span
+							class="risk-level">Низкий</span>, <span>Confidence</span>=<span
+							class="confidence-level">Средний</span> <span>(2)</span>
+					</h3>
+					<ol>
+						
+						<li class="alerts--site-li">
+							<h4>
+								<span class="site">http://localhost:3000</span> <span>(2)</span>
+							</h4>
+							<ol>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-4">Заголовок X-Content-Type-Options отсутствует </a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:3000/favicon.ico</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				<li>
+					<span><a href="https://cwe.mitre.org/data/definitions/693.html">CWE-693</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">OWASP_2021_A05</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-top-ten/2017/A6_2017-Security_Misconfiguration.html">OWASP_2017_A06</a></span> 
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>Для заголовка Anti-MIME-Sniffing X-Content-Type-Options не задано значение «nosniff». </p>
+
+<p>Это позволяет более старым версиям Internet Explorer и Chrome выполнять MIME-сниффинг тела ответа, что может привести к интерпретации и отображению тела ответа как тип контента, </p>
+
+<p>отличный от объявленного типа контента. </p>
+
+<p>Текущая (начало 2014 г.) и устаревшая версии Firefox будут использовать объявленный тип содержимого (если он установлен), а не выполнять сниффинг MIME. </p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Other info</th>
+		<td> 
+<p>Эта проблема по-прежнему относится к страницам с типами ошибок (401, 403, 500 и т. д.), </p>
+
+<p>Поскольку на эти страницы часто по-прежнему влияют проблемы с внедрением, </p>
+
+<p>и в этом случае по-прежнему существует проблема, связанная с тем, что браузеры отслеживают страницы с их фактическим типом содержимого.</p>
+
+<p>При пороговом значении «Высокий» (&quot;High&quot;) это правило сканирования не будет предупреждать </p>
+
+<p>об ошибках клиента или сервера. </p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (272 bytes)</summary>
+				
+				<pre><code>GET http://localhost:3000/favicon.ico HTTP/1.1
+host: localhost:3000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+pragma: no-cache
+cache-control: no-cache
+referer: http://localhost:3000
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (426 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: *
+Access-Control-Allow-Headers: *
+Accept-Ranges: bytes
+Cache-Control: public, max-age=0
+Last-Modified: Sun, 24 Nov 2024 13:16:09 GMT
+ETag: W/&quot;f1e-1935e50bbfe&quot;
+Content-Type: image/x-icon
+Content-Length: 3870
+Vary: Accept-Encoding
+Date: Thu, 16 Jan 2025 14:21:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+</code></pre>
+				
+				
+			</details> <details class="response-body">
+				<summary>Response body (3870 bytes)</summary>
+				
+				<pre><code>         ã  F          )         9  5  @@     °  n  PNG
+
+   IHDR         (-S   äPLTE&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2PX=r)7;*:&gt;H¤-BGE8do5Xb6[eK®K¯1MU9gs3S\I§:gt&#39;03@{V¹ÔT´ÏA}V»Ö@y6\fH¦-CII¨E+;@7_i7_jFJ«K°H£-BHaÚû,@FCL³&amp;.0W½ÙN£ºI¨$)+BJªR¯È?v&gt;s&gt;uS±Ê=qP©ÁP¨ÀP§¿,?D4U^%+-M ¶K®%+,2OX+&lt;AL²#&amp;&amp;D%,.I©vôTö   tRNSIæçJäeÀe¦   ©IDATxMµZEAÿÙ³	îî%R¡ïßáTThÇG»,Á®Å=²ÒîmífímnfA$â&gt;!¦gºôHg½EßÜµ}	Ý»ýº¼kdú§¯JoÎ3æL&quot;J¹ ÌÕüQ$âçÄ¼ffµ,é5i9Ì¯H¨/mBwÍÜw;DØ+&amp;W«ª¹¨Dôo@Ê´RI©ÐB¡om.Û³À    IEND®B`PNG
+
+   IHDR         ×©ÍÊ  ePLTE&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2RZN¢¹J«3R[J¬)59YÁÞ0KS4W`Q«ÄL²%+-0JR)6::gtC&quot;##?vU·Ñ?w&lt;n{&amp;-/YÂß=q:iuBA}A{B/IPP§¿=qK®_ÔóL³$();lzR¯ÉaÚûI¨ZÆã3U^1MU3T]ZÅâI§X¿ÜF-BGP¨À6[e,@E5ZdO§¿-BHX¿Û+=AW¾Ú,@FW¼ØQªÃ?vW¼×+&lt;A@y&quot;#$\Ìê4Wa\ÌëS²Ì$(*.EL^ÑñVºÕ6]h#$%G¡#&amp;&#39;;jwV¹Ô-CIL±ZÄá^Ðï&gt;uS°Ê/HNM ·_Õõ\ËéM ¶8doDD&gt;t+=B[Èæ,&gt;C&gt;t&lt;o}@y0LS.EKT´Î$&#39;(%,.A~W½ÙC%+,\ÊèC!ä   tRNSíîG¾Ö  OIDATxlÃB¶Qu´ß_È³&lt;Ë¦Ýveê²óa6AÎ¾ûv¢{@Î E&#39; Þd IÕ!çí  ðCÔTþg  1ÂE(ÏñSQsâiÄZÿ·V¹ Ð)ég!ªhÎùtéº-i}µµ&lt;Õ?¶lBZaÄ´4{DÓâ»_e8¥yÇ­À3)¥?°f;8.ã¤tÌ=å;	:ã52fKZìlù¨ØÍ9.#ÒAÁqÌúÛ®£Vÿ`=$¬Â?_¶¾®ÔqMç.ïJ$
+?^q÷ñíÛï.},ìsæÝ_TttÔ¾ 1#/(ì-[è`è`ÌÚïÅðZd5?ÎebZ¿Þi.ÛæìqÎ+1°}Â5ù  ïçd¨GÏø    IEND®B`PNG
+
+   IHDR           D¤Æ  APLTE   &quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2RZVºÖ_ÔôU·Ñ=r$()&#39;25]ÎíC0LS&lt;o}XÀÜX¿Û0JQ=p~D&lt;n{VºÕE8do_ÔóEFH¥9dp_ÕõH¤I¨F6[e`Ö÷`×øL³/GM_ÓòU¸Ó&#39;02P©Á/IPPªÂX¿Ü&amp;/1;ly3R[`ØøG¡T³Í\ÌêaÚû1OW&quot;##Q«ÄaÙúR®Ç=q`Öö.EL+=ATµÐ-CIK®#&amp;&#39;C^ÐïI¨&amp;.04U^^Ñð@yZÇä$(*[Éç^Ññ,?DR¯É&quot;#$1NV1MTD&gt;u;kxG R¯È/HN&amp;-/@y&gt;s&gt;t@z]ÍìP¨À$&#39;(D]Ïî&lt;n|0JRU·Ò×\¼   	tRNS %­ñ&#39;ïó(ò~ÑÝè  IDATxC1F_Ý¿MmÛ¶4¶m{ÿ¤nçáÓ	®A$à$b HeøTãWÄÂhh´:PtZQ«0@.`Þ`4-V`³Zì&amp;A#ÁébkÝÄãñúØ&gt;.&#39;&#39;ø`C$FØÏ	(±x&quot;6XácTÚéL§@Iù;d d-¹|¾P,È9¡R­ÕÍf3¢¿F½VmMíX§ÚíÍç@Y7ÎõºÕN¬=åÈÊªu}Ö¬«+eaiq ¤Ö76­íÝ=hûZìíîlë}á¨Ê±¥[F«I9A¹k9¥Öëä3¢Ã9Î¡óqB~Øáb¸ÃåU_¸^Ü [·ôwý{zvzÙ(£(£(þfòqÉGÉïkñÏçY¾ÿªfäòÇ~à:*4ÓQ\O&gt; ¼&lt;×úW£éÍZ|ÞÅ7ñïjTÔäãn½»¢®`$Hð+ò¿GOñûð*èxø¥X*|^ÿd    IEND®B`PNG
+
+   IHDR   @   @   ·ì  :PLTE   &quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;%+-@yW¼×`×ø^ÑñS²ÌC,&gt;C*8&lt;XÁÝaÚûaÙùMµ+&lt;AaÙúXÀÜ#%%TµÐL´=q&gt;uK°`ÖöA}L±8do=r%+,@y^ÐïS²Ë)59=qP©ÁU·Ò&quot;#$PªÂ\Êè0JQQªÃ&quot;##U·Ñ#&amp;&amp;_Ôô&gt;t&gt;s`Øø_Ôó5Yc1OW5Zd1NV+=B1MU+;@/GM\Ìê*;?3S\)8&lt;2RZ_Õõ+=A]Ïî,@F,@E&amp;-/0KS7alO¦¾9dp8amB~EP¨ÀN¢¹&#39;023T]]Îí?x3U^C6\gU¸Ó&amp;.0D7_iR­ÆH¥I¨M ¶$(*?vZÆãX¿Ü-AG#$%[Éç8co[ÈæW½ÙC&#39;25?v8bn%*+L²N£º2PX)7;=p~(58^ÒòP§¿4WaQ«ÄT´Ï0JRQ¬ÅT´ÎI¨6]hR¯ÉT³Í0LSF9eqEE9gsFC#&amp;&#39;\Ëé`Ö÷&amp;/16\fBA{R®Ç]Íì(47%,.*:&gt;*9=9fr:gt7^iU¶Ð?wZÇäX¿Û^ÑðQ­ÅH£)6:V¹Ô&#39;034U^E.EL.FMK®@zS×   tRNS *×øÖý	»½+üùóÔ,ØúôÀ=V  IDATx¤ËµC! ÐïC|ÿãÚ^yR]ÕMÛáO]ßÔÕÝ0NÈ2ÍËí¿&quot;ªª¢(0Vã(ÀY%PDT-~(m¬ó!âKÞY£~´üIÒf{³ÛÞáa¼§§ô3ÕOp&amp;Ð¤¡ x÷#j­ôÚ¶mméòc)]m¤É)Æ§gfçhk²ñÎÒ ægg¦ÇìÐ+XÅêuiyV×ª·k«°²\[ü:,Ø6ØÜjÄ²;»&quot;»;°×XùþÛfÁáÇÍûýSÎÎÏÏ8=Þo¾;æèÐ(öÓ¥BkÔeûÍ\7p+mîîáþNÚ&lt;ÀQðOÒæùô³´yg»ttÐëoý½£ìVð»Òäsýü¬ø&amp;_ðaüïV~à·Ö?­*8àQ ;8¥Á,¸¤f¥1Üx¤×§ñ*øÑA¯Ôð°a#±³¶¦#nPi+¼¶CÈ,ÆèäÍ_áNbÑáÃ¸ç HB*ÚÒ¦ L( ^&lt;ñÃL6pJ¾PÉ¥©¢%&quot;R,ä9Èe3eRËa1(
+¢ßqÇ8Ù´mKË±mÆ¶mÛü·yi!èÎªYÏuë ÀÏ_Àï?i÷ý+òÄA|ù{´?¿_En).JËD¤&lt;
+©¬¢Z\Ts©R*(	¯©JuX/4J9¡5·DEµ4kÇ4&amp;i¥V4Ú¡®Ð¯vsf:àg,¢èBC»î$¶ºÍùîá@ôI_?&lt;!^ÈàÓ½ÇöäõB%Làw±FD1Á¨(F±øH%0Æ±¿ÅØ(¢0ÅÄ&#39;ÅæN.0u@íYPWìIüaNâKÄ?ðÓµ=ev/c±Ó0c0÷2Êë:06R-uÒÄ­\QÌ¶ää´¼µ6R#ÆF³6Òñ·rÕ­ìuæmâðÂIñi~ Åü ÃsPþ&quot;± ó¼eiyå£ËPàãÊò§¡ÝÒ,S]U¦ºVªÖ©®Z¦êoëë·xzãâÆSnm¬{ÚºwaÙÏÅ»´Ýõ(mg/®þå½À¿¼û[§b³µq¶Å&amp;Õ¯¹$ñzÈH&gt;aÌKT1/æø1O0¾.hÍYþAÓö£
+-ê&gt;Ûº«¢XÕ¢î}ß¨ëÛÑ;ÃöN´ØvÅýÎ¸ÿ1 ë×ÄO@&amp;v/Äþ_ö\ôÇ\í.½+0;!fÊ¦´Ó%Â JY·OÂ&#39;/Å]_;ßÀ&#39;&quot;&amp;Nªn	aQ^ cx¦AáÒ    IEND®B`</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Parameter</th>
+		<td><pre><code>x-content-type-options</code></pre></td>
+	</tr>
+	
+	
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Убедитесь, что приложение / веб-сервер правильно задает заголовок Content-Type </p>
+
+<p>и что он устанавливает заголовок X-Content-Type-Options равным «nosniff» для всех веб-страниц.</p>
+
+<p>Если возможно, убедитесь, что конечный пользователь использует современный веб-браузер, соответствующий стандартам, который вообще не выполняет сниффинг MIME или который может быть направлен веб-приложением / веб-сервером, чтобы не выполнять сниффинг MIME. </p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-5">Сервер утекает информацию через поля заголовка HTTP-ответа &quot;X-Powered-By&quot; </a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:3000/favicon.ico</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				<li>
+					<span><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/">OWASP_2021_A01</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure.html">OWASP_2017_A03</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework">WSTG-v42-INFO-08</a></span> 
+				</li>
+				<li>
+					<span><a href="https://cwe.mitre.org/data/definitions/200.html">CWE-200</a></span> 
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>Веб-сервер / сервер приложений пропускает информацию </p>
+
+<p>через один или несколько заголовков HTTP-ответа «X-Powered-By». </p>
+
+<p>Доступ к такой информации может облегчить злоумышленникам идентификацию других фреймворков / компонентов, </p>
+
+<p>от которых зависит ваше веб-приложение, и уязвимостей, </p>
+
+<p>которым могут быть подвержены такие компоненты. </p>
+ </td>
+	</tr>
+	
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (272 bytes)</summary>
+				
+				<pre><code>GET http://localhost:3000/favicon.ico HTTP/1.1
+host: localhost:3000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+pragma: no-cache
+cache-control: no-cache
+referer: http://localhost:3000
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (426 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: *
+Access-Control-Allow-Headers: *
+Accept-Ranges: bytes
+Cache-Control: public, max-age=0
+Last-Modified: Sun, 24 Nov 2024 13:16:09 GMT
+ETag: W/&quot;f1e-1935e50bbfe&quot;
+Content-Type: image/x-icon
+Content-Length: 3870
+Vary: Accept-Encoding
+Date: Thu, 16 Jan 2025 14:21:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+</code></pre>
+				
+				
+			</details> <details class="response-body">
+				<summary>Response body (3870 bytes)</summary>
+				
+				<pre><code>         ã  F          )         9  5  @@     °  n  PNG
+
+   IHDR         (-S   äPLTE&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2PX=r)7;*:&gt;H¤-BGE8do5Xb6[eK®K¯1MU9gs3S\I§:gt&#39;03@{V¹ÔT´ÏA}V»Ö@y6\fH¦-CII¨E+;@7_i7_jFJ«K°H£-BHaÚû,@FCL³&amp;.0W½ÙN£ºI¨$)+BJªR¯È?v&gt;s&gt;uS±Ê=qP©ÁP¨ÀP§¿,?D4U^%+-M ¶K®%+,2OX+&lt;AL²#&amp;&amp;D%,.I©vôTö   tRNSIæçJäeÀe¦   ©IDATxMµZEAÿÙ³	îî%R¡ïßáTThÇG»,Á®Å=²ÒîmífímnfA$â&gt;!¦gºôHg½EßÜµ}	Ý»ýº¼kdú§¯JoÎ3æL&quot;J¹ ÌÕüQ$âçÄ¼ffµ,é5i9Ì¯H¨/mBwÍÜw;DØ+&amp;W«ª¹¨Dôo@Ê´RI©ÐB¡om.Û³À    IEND®B`PNG
+
+   IHDR         ×©ÍÊ  ePLTE&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2RZN¢¹J«3R[J¬)59YÁÞ0KS4W`Q«ÄL²%+-0JR)6::gtC&quot;##?vU·Ñ?w&lt;n{&amp;-/YÂß=q:iuBA}A{B/IPP§¿=qK®_ÔóL³$();lzR¯ÉaÚûI¨ZÆã3U^1MU3T]ZÅâI§X¿ÜF-BGP¨À6[e,@E5ZdO§¿-BHX¿Û+=AW¾Ú,@FW¼ØQªÃ?vW¼×+&lt;A@y&quot;#$\Ìê4Wa\ÌëS²Ì$(*.EL^ÑñVºÕ6]h#$%G¡#&amp;&#39;;jwV¹Ô-CIL±ZÄá^Ðï&gt;uS°Ê/HNM ·_Õõ\ËéM ¶8doDD&gt;t+=B[Èæ,&gt;C&gt;t&lt;o}@y0LS.EKT´Î$&#39;(%,.A~W½ÙC%+,\ÊèC!ä   tRNSíîG¾Ö  OIDATxlÃB¶Qu´ß_È³&lt;Ë¦Ýveê²óa6AÎ¾ûv¢{@Î E&#39; Þd IÕ!çí  ðCÔTþg  1ÂE(ÏñSQsâiÄZÿ·V¹ Ð)ég!ªhÎùtéº-i}µµ&lt;Õ?¶lBZaÄ´4{DÓâ»_e8¥yÇ­À3)¥?°f;8.ã¤tÌ=å;	:ã52fKZìlù¨ØÍ9.#ÒAÁqÌúÛ®£Vÿ`=$¬Â?_¶¾®ÔqMç.ïJ$
+?^q÷ñíÛï.},ìsæÝ_TttÔ¾ 1#/(ì-[è`è`ÌÚïÅðZd5?ÎebZ¿Þi.ÛæìqÎ+1°}Â5ù  ïçd¨GÏø    IEND®B`PNG
+
+   IHDR           D¤Æ  APLTE   &quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;2RZVºÖ_ÔôU·Ñ=r$()&#39;25]ÎíC0LS&lt;o}XÀÜX¿Û0JQ=p~D&lt;n{VºÕE8do_ÔóEFH¥9dp_ÕõH¤I¨F6[e`Ö÷`×øL³/GM_ÓòU¸Ó&#39;02P©Á/IPPªÂX¿Ü&amp;/1;ly3R[`ØøG¡T³Í\ÌêaÚû1OW&quot;##Q«ÄaÙúR®Ç=q`Öö.EL+=ATµÐ-CIK®#&amp;&#39;C^ÐïI¨&amp;.04U^^Ñð@yZÇä$(*[Éç^Ññ,?DR¯É&quot;#$1NV1MTD&gt;u;kxG R¯È/HN&amp;-/@y&gt;s&gt;t@z]ÍìP¨À$&#39;(D]Ïî&lt;n|0JRU·Ò×\¼   	tRNS %­ñ&#39;ïó(ò~ÑÝè  IDATxC1F_Ý¿MmÛ¶4¶m{ÿ¤nçáÓ	®A$à$b HeøTãWÄÂhh´:PtZQ«0@.`Þ`4-V`³Zì&amp;A#ÁébkÝÄãñúØ&gt;.&#39;&#39;ø`C$FØÏ	(±x&quot;6XácTÚéL§@Iù;d d-¹|¾P,È9¡R­ÕÍf3¢¿F½VmMíX§ÚíÍç@Y7ÎõºÕN¬=åÈÊªu}Ö¬«+eaiq ¤Ö76­íÝ=hûZìíîlë}á¨Ê±¥[F«I9A¹k9¥Öëä3¢Ã9Î¡óqB~Øáb¸ÃåU_¸^Ü [·ôwý{zvzÙ(£(£(þfòqÉGÉïkñÏçY¾ÿªfäòÇ~à:*4ÓQ\O&gt; ¼&lt;×úW£éÍZ|ÞÅ7ñïjTÔäãn½»¢®`$Hð+ò¿GOñûð*èxø¥X*|^ÿd    IEND®B`PNG
+
+   IHDR   @   @   ·ì  :PLTE   &quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;%+-@yW¼×`×ø^ÑñS²ÌC,&gt;C*8&lt;XÁÝaÚûaÙùMµ+&lt;AaÙúXÀÜ#%%TµÐL´=q&gt;uK°`ÖöA}L±8do=r%+,@y^ÐïS²Ë)59=qP©ÁU·Ò&quot;#$PªÂ\Êè0JQQªÃ&quot;##U·Ñ#&amp;&amp;_Ôô&gt;t&gt;s`Øø_Ôó5Yc1OW5Zd1NV+=B1MU+;@/GM\Ìê*;?3S\)8&lt;2RZ_Õõ+=A]Ïî,@F,@E&amp;-/0KS7alO¦¾9dp8amB~EP¨ÀN¢¹&#39;023T]]Îí?x3U^C6\gU¸Ó&amp;.0D7_iR­ÆH¥I¨M ¶$(*?vZÆãX¿Ü-AG#$%[Éç8co[ÈæW½ÙC&#39;25?v8bn%*+L²N£º2PX)7;=p~(58^ÒòP§¿4WaQ«ÄT´Ï0JRQ¬ÅT´ÎI¨6]hR¯ÉT³Í0LSF9eqEE9gsFC#&amp;&#39;\Ëé`Ö÷&amp;/16\fBA{R®Ç]Íì(47%,.*:&gt;*9=9fr:gt7^iU¶Ð?wZÇäX¿Û^ÑðQ­ÅH£)6:V¹Ô&#39;034U^E.EL.FMK®@zS×   tRNS *×øÖý	»½+üùóÔ,ØúôÀ=V  IDATx¤ËµC! ÐïC|ÿãÚ^yR]ÕMÛáO]ßÔÕÝ0NÈ2ÍËí¿&quot;ªª¢(0Vã(ÀY%PDT-~(m¬ó!âKÞY£~´üIÒf{³ÛÞáa¼§§ô3ÕOp&amp;Ð¤¡ x÷#j­ôÚ¶mméòc)]m¤É)Æ§gfçhk²ñÎÒ ægg¦ÇìÐ+XÅêuiyV×ª·k«°²\[ü:,Ø6ØÜjÄ²;»&quot;»;°×XùþÛfÁáÇÍûýSÎÎÏÏ8=Þo¾;æèÐ(öÓ¥BkÔeûÍ\7p+mîîáþNÚ&lt;ÀQðOÒæùô³´yg»ttÐëoý½£ìVð»Òäsýü¬ø&amp;_ðaüïV~à·Ö?­*8àQ ;8¥Á,¸¤f¥1Üx¤×§ñ*øÑA¯Ôð°a#±³¶¦#nPi+¼¶CÈ,ÆèäÍ_áNbÑáÃ¸ç HB*ÚÒ¦ L( ^&lt;ñÃL6pJ¾PÉ¥©¢%&quot;R,ä9Èe3eRËa1(
+¢ßqÇ8Ù´mKË±mÆ¶mÛü·yi!èÎªYÏuë ÀÏ_Àï?i÷ý+òÄA|ù{´?¿_En).JËD¤&lt;
+©¬¢Z\Ts©R*(	¯©JuX/4J9¡5·DEµ4kÇ4&amp;i¥V4Ú¡®Ð¯vsf:àg,¢èBC»î$¶ºÍùîá@ôI_?&lt;!^ÈàÓ½ÇöäõB%Làw±FD1Á¨(F±øH%0Æ±¿ÅØ(¢0ÅÄ&#39;ÅæN.0u@íYPWìIüaNâKÄ?ðÓµ=ev/c±Ó0c0÷2Êë:06R-uÒÄ­\QÌ¶ää´¼µ6R#ÆF³6Òñ·rÕ­ìuæmâðÂIñi~ Åü ÃsPþ&quot;± ó¼eiyå£ËPàãÊò§¡ÝÒ,S]U¦ºVªÖ©®Z¦êoëë·xzãâÆSnm¬{ÚºwaÙÏÅ»´Ýõ(mg/®þå½À¿¼û[§b³µq¶Å&amp;Õ¯¹$ñzÈH&gt;aÌKT1/æø1O0¾.hÍYþAÓö£
+-ê&gt;Ûº«¢XÕ¢î}ß¨ëÛÑ;ÃöN´ØvÅýÎ¸ÿ1 ë×ÄO@&amp;v/Äþ_ö\ôÇ\í.½+0;!fÊ¦´Ó%Â JY·OÂ&#39;/Å]_;ßÀ&#39;&quot;&amp;Nªn	aQ^ cx¦AáÒ    IEND®B`</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	
+	
+	<tr>
+		<th scope="row">Evidence</th>
+		<td><pre><code>X-Powered-By: Express</code></pre></td>
+	</tr>
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Убедитесь, что ваш веб-сервер, сервер приложений, балансировщик нагрузки и т. д. настроены на подавление заголовков «X-Powered-By». </p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+							</ol>
+						</li>
+						
+					</ol>
+				</li>
+				
+				
+				  
+				 
+				
+				
+				
+				
+				<li id="alerts--risk-0-confidence-2">
+					<h3>
+						<span>Risk</span>=<span
+							class="risk-level">Информационный</span>, <span>Confidence</span>=<span
+							class="confidence-level">Средний</span> <span>(2)</span>
+					</h3>
+					<ol>
+						
+						<li class="alerts--site-li">
+							<h4>
+								<span class="site">http://localhost:3000</span> <span>(2)</span>
+							</h4>
+							<ol>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-6">Раскрытие информации - подозрительные комментарии </a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:3000</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				<li>
+					<span><a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/">OWASP_2021_A01</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/05-Review_Webpage_Content_for_Information_Leakage">WSTG-v42-INFO-05</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure.html">OWASP_2017_A03</a></span> 
+				</li>
+				<li>
+					<span><a href="https://cwe.mitre.org/data/definitions/200.html">CWE-200</a></span> 
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>Ответ содержит подозрительные комментарии, которые могут помочь злоумышленнику. </p>
+
+<p>Примечание: совпадения, сделанные в блоках или файлах скрипта, </p>
+
+<p>относятся ко всему содержимому, </p>
+
+<p>а не только к комментариям. </p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Other info</th>
+		<td> 
+<p>Был использован следующий шаблон: \bFROM\b и был обнаружен в элементе, начинающемся с: &quot;&lt;!--</p>
+
+<p>      Notice the use of  in the tags above.</p>
+
+<p>      It will be replaced with the URL of the `public` folder during the buil&quot;, см. </p>
+
+<p>Поле доказательства для подозрительного комментария / фрагмента. </p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (228 bytes)</summary>
+				
+				<pre><code>GET http://localhost:3000 HTTP/1.1
+host: localhost:3000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+pragma: no-cache
+cache-control: no-cache
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (374 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: *
+Access-Control-Allow-Headers: *
+Content-Type: text/html; charset=utf-8
+Accept-Ranges: bytes
+Content-Length: 1368
+ETag: W/&quot;558-UzzGoRO1R21PyIyzXoPHhVjhJOs&quot;
+Vary: Accept-Encoding
+Date: Thu, 16 Jan 2025 14:21:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+</code></pre>
+				
+				
+			</details> <details class="response-body" open="open">
+				<summary>Response body (1368 bytes)</summary>
+				
+				<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;link rel=&quot;icon&quot; href=&quot;/favicon.ico&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;meta name=&quot;description&quot; content=&quot;Web site created using create-react-app&quot; /&gt;
+    &lt;!--
+      Notice the use of  in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike &quot;/favicon.ico&quot; or &quot;favicon.ico&quot;, &quot;/favicon.ico&quot; will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    --&gt;
+    &lt;title&gt;React App&lt;/title&gt;
+  &lt;script defer src=&quot;/static/js/bundle.js&quot;&gt;&lt;/script&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;noscript&gt;You need to enable JavaScript to run this app.&lt;/noscript&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the &lt;body&gt; tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	
+	
+	<tr>
+		<th scope="row">Evidence</th>
+		<td><pre><code>from</code></pre></td>
+	</tr>
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Удалите все комментарии, которые возвращают информацию, </p>
+
+<p>которая может помочь злоумышленнику, </p>
+
+<p>и устраните все основные проблемы, на которые они ссылаются. </p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-7">Современное веб-приложение </a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:3000</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>Приложение выглядит как современное веб-приложение. </p>
+
+<p>Если вам нужно изучить его автоматически, </p>
+
+<p>то Ajax Spider может оказаться более эффективным, чем стандартный. </p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Other info</th>
+		<td> 
+<p>Ссылки не найдены</p>
+
+<p>пока есть скрипты,</p>
+
+<p>что свидетельствует о том, что это современное веб-приложение.</p>
+ </td>
+	</tr>
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (228 bytes)</summary>
+				
+				<pre><code>GET http://localhost:3000 HTTP/1.1
+host: localhost:3000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+pragma: no-cache
+cache-control: no-cache
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (374 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: *
+Access-Control-Allow-Headers: *
+Content-Type: text/html; charset=utf-8
+Accept-Ranges: bytes
+Content-Length: 1368
+ETag: W/&quot;558-UzzGoRO1R21PyIyzXoPHhVjhJOs&quot;
+Vary: Accept-Encoding
+Date: Thu, 16 Jan 2025 14:21:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+</code></pre>
+				
+				
+			</details> <details class="response-body" open="open">
+				<summary>Response body (1368 bytes)</summary>
+				
+				<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;link rel=&quot;icon&quot; href=&quot;/favicon.ico&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+    &lt;meta name=&quot;description&quot; content=&quot;Web site created using create-react-app&quot; /&gt;
+    &lt;!--
+      Notice the use of  in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike &quot;/favicon.ico&quot; or &quot;favicon.ico&quot;, &quot;/favicon.ico&quot; will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    --&gt;
+    &lt;title&gt;React App&lt;/title&gt;
+  &lt;script defer src=&quot;/static/js/bundle.js&quot;&gt;&lt;/script&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;noscript&gt;You need to enable JavaScript to run this app.&lt;/noscript&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the &lt;body&gt; tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	
+	
+	<tr>
+		<th scope="row">Evidence</th>
+		<td><pre><code>&lt;script defer src=&quot;/static/js/bundle.js&quot;&gt;&lt;/script&gt;</code></pre></td>
+	</tr>
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Это информационное предупреждение, поэтому никаких изменений не требуется. </p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+							</ol>
+						</li>
+						
+					</ol>
+				</li>
+				
+				
+				  
+			</ol>
+		</section>
+
+		<section id="appendix" class="appendix">
+			<h2>Appendix</h2>
+
+			<section id="alert-types" class="alert-types">
+				<h3>Alert types</h3>
+				<p class="alert-types-intro">This section contains additional information on the types of alerts in the report.</p>
+				<ol>
+					<li
+						id="alert-type-0">
+						<h4>CSP: Директива подстановочного знака </h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by a passive scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/10055/">CSP</a>)
+									</span>   
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">CWE ID</th>
+								<td><a
+									href="https://cwe.mitre.org/data/definitions/693.html">693</a></td>
+							</tr>
+							<tr>
+								<th scope="row">WASC ID</th>
+								<td>15</td>
+							</tr>
+							<tr>
+								<th scope="row">Reference</th>
+								<td>
+									<ol>
+										<li><a
+											href="https://www.w3.org/TR/CSP/">https://www.w3.org/TR/CSP/</a></li>
+										<li><a
+											href="https://caniuse.com/#search=content+security+policy">https://caniuse.com/#search=content+security+policy</a></li>
+										<li><a
+											href="https://content-security-policy.com/">https://content-security-policy.com/</a></li>
+										<li><a
+											href="https://github.com/HtmlUnit/htmlunit-csp">https://github.com/HtmlUnit/htmlunit-csp</a></li>
+										<li><a
+											href="https://developers.google.com/web/fundamentals/security/csp#policy_applies_to_a_wide_variety_of_resources">https://developers.google.com/web/fundamentals/security/csp#policy_applies_to_a_wide_variety_of_resources</a></li>
+									</ol>
+								</td>
+							</tr>
+						</table>
+					</li>
+					<li
+						id="alert-type-1">
+						<h4>Заголовок Content Security Policy (CSP) не задан</h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by a passive scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/10038/">Заголовок Content Security Policy (CSP) не задан</a>)
+									</span>   
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">CWE ID</th>
+								<td><a
+									href="https://cwe.mitre.org/data/definitions/693.html">693</a></td>
+							</tr>
+							<tr>
+								<th scope="row">WASC ID</th>
+								<td>15</td>
+							</tr>
+							<tr>
+								<th scope="row">Reference</th>
+								<td>
+									<ol>
+										<li><a
+											href="https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy">https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy</a></li>
+										<li><a
+											href="https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html</a></li>
+										<li><a
+											href="https://www.w3.org/TR/CSP/">https://www.w3.org/TR/CSP/</a></li>
+										<li><a
+											href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a></li>
+										<li><a
+											href="https://web.dev/articles/csp">https://web.dev/articles/csp</a></li>
+										<li><a
+											href="https://caniuse.com/#feat=contentsecuritypolicy">https://caniuse.com/#feat=contentsecuritypolicy</a></li>
+										<li><a
+											href="https://content-security-policy.com/">https://content-security-policy.com/</a></li>
+									</ol>
+								</td>
+							</tr>
+						</table>
+					</li>
+					<li
+						id="alert-type-2">
+						<h4>Междоменная неправильная конфигурация </h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by a passive scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/10098/">Междоменная неправильная конфигурация </a>)
+									</span>   
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">CWE ID</th>
+								<td><a
+									href="https://cwe.mitre.org/data/definitions/264.html">264</a></td>
+							</tr>
+							<tr>
+								<th scope="row">WASC ID</th>
+								<td>14</td>
+							</tr>
+							<tr>
+								<th scope="row">Reference</th>
+								<td>
+									<ol>
+										<li><a
+											href="https://vulncat.fortify.com/en/detail?id=desc.config.dotnet.html5_overly_permissive_cors_policy">https://vulncat.fortify.com/en/detail?id=desc.config.dotnet.html5_overly_permissive_cors_policy</a></li>
+									</ol>
+								</td>
+							</tr>
+						</table>
+					</li>
+					<li
+						id="alert-type-3">
+						<h4>Отсутствует заголовок (Header) для защиты от кликджекинга </h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by a passive scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/10020/">Заголовок против кликджекинга </a>)
+									</span>   
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">CWE ID</th>
+								<td><a
+									href="https://cwe.mitre.org/data/definitions/1021.html">1021</a></td>
+							</tr>
+							<tr>
+								<th scope="row">WASC ID</th>
+								<td>15</td>
+							</tr>
+							<tr>
+								<th scope="row">Reference</th>
+								<td>
+									<ol>
+										<li><a
+											href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options">https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options</a></li>
+									</ol>
+								</td>
+							</tr>
+						</table>
+					</li>
+					<li
+						id="alert-type-4">
+						<h4>Заголовок X-Content-Type-Options отсутствует </h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by a passive scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/10021/">Заголовок X-Content-Type-Options отсутствует </a>)
+									</span>   
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">CWE ID</th>
+								<td><a
+									href="https://cwe.mitre.org/data/definitions/693.html">693</a></td>
+							</tr>
+							<tr>
+								<th scope="row">WASC ID</th>
+								<td>15</td>
+							</tr>
+							<tr>
+								<th scope="row">Reference</th>
+								<td>
+									<ol>
+										<li><a
+											href="https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/gg622941(v=vs.85)">https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/compatibility/gg622941(v=vs.85)</a></li>
+										<li><a
+											href="https://owasp.org/www-community/Security_Headers">https://owasp.org/www-community/Security_Headers</a></li>
+									</ol>
+								</td>
+							</tr>
+						</table>
+					</li>
+					<li
+						id="alert-type-5">
+						<h4>Сервер утекает информацию через поля заголовка HTTP-ответа &quot;X-Powered-By&quot; </h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by a passive scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/10037/">Сервер утекает информацию через поля заголовка HTTP-ответа &quot;X-Powered-By&quot; </a>)
+									</span>   
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">CWE ID</th>
+								<td><a
+									href="https://cwe.mitre.org/data/definitions/200.html">200</a></td>
+							</tr>
+							<tr>
+								<th scope="row">WASC ID</th>
+								<td>13</td>
+							</tr>
+							<tr>
+								<th scope="row">Reference</th>
+								<td>
+									<ol>
+										<li><a
+											href="https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework">https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework</a></li>
+										<li><a
+											href="https://www.troyhunt.com/2012/02/shhh-dont-let-your-response-headers.html">https://www.troyhunt.com/2012/02/shhh-dont-let-your-response-headers.html</a></li>
+									</ol>
+								</td>
+							</tr>
+						</table>
+					</li>
+					<li
+						id="alert-type-6">
+						<h4>Раскрытие информации - подозрительные комментарии </h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by a passive scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/10027/">Раскрытие информации - подозрительные комментарии </a>)
+									</span>   
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">CWE ID</th>
+								<td><a
+									href="https://cwe.mitre.org/data/definitions/200.html">200</a></td>
+							</tr>
+							<tr>
+								<th scope="row">WASC ID</th>
+								<td>13</td>
+							</tr>
+							
+						</table>
+					</li>
+					<li
+						id="alert-type-7">
+						<h4>Современное веб-приложение </h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by a passive scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/10109/">Современное веб-приложение </a>)
+									</span>   
+								</td>
+							</tr>
+							
+							
+							
+						</table>
+					</li>
+				</ol>
+			</section>
+		</section>
+		 
+	</main>
+</body>
+</html>
+
+
+
