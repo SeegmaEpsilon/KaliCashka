@@ -85,6 +85,7 @@ def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
     try:
         # Получаем историю сообщений с добавлением SystemMessage
         messages = get_user_chat_history(user_id, db)
+        print(messages)
 
         # Добавляем новое сообщение пользователя
         messages.append(HumanMessage(content=message))
@@ -123,3 +124,46 @@ def execute_command_on_kali(command: str) -> Tuple[str, str]:
         return output, error
     finally:
         client.close()
+
+
+def auto_pentest_loop(target_info: str, user_id: int, db: Session):
+    """
+    Запускает автоматический цикл пентеста:
+    1. Модель генерирует команду
+    2. Команда выполняется на Kali
+    3. Результат возвращается в модель
+    4. Повторяем, пока модель не скажет "стоп"
+    """
+    messages = get_user_chat_history(user_id, db)  # история чата
+    # Добавим от пользователя команду "Начать пентест: <target_info>"
+    messages.append(HumanMessage(content=f"Начинаем пентест {target_info}"))
+
+    while True:
+        # 1. Генерируем ответ модели
+        ai_response = model.invoke(messages)
+        response_text = ai_response.content
+
+        # 2. Добавляем в историю
+        messages.append(AIMessage(content=response_text))
+
+        # 3. Пробуем извлечь команду из ответа
+        command = extract_command_from_response(response_text)
+        if not command:
+            # Если модель не дала команду (или сказала "стоп"), завершаем цикл
+            break
+
+        # 4. Выполняем команду на Kali
+        output, error = execute_command_on_kali(command)
+        result_text = output if output else error
+
+        # 5. Сохраняем команду и результат в БД (CommandHistory)
+        save_command_history(user_id, command, result_text, db)
+
+        # 6. Передаём результат обратно в контекст как HumanMessage,
+        #    чтобы модель могла его проанализировать
+        messages.append(HumanMessage(
+            content=f"Результат команды:\n{result_text}"
+        ))
+
+    return "Автоматический пентест завершён"
+

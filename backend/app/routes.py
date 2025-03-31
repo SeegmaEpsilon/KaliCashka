@@ -48,12 +48,13 @@ def protected_route(current_user: str = Depends(get_current_user)):
     return {"message": f"Привет, {current_user}! Вы имеете доступ к защищённому ресурсу."}
 
 
+# routes.py
 @router.post("/chat")
 def chat(message: Message, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     """
     Эндпоинт для отправки сообщения в GigaChat.
     """
-    user_id = current_user["username"]  # Извлекаем логин пользователя
+    user_id = current_user["id"]  # Используем числовой ID пользователя
     response = send_message_to_ai(user_id, message.message, db)
     return {"response": response}
 
@@ -99,4 +100,11 @@ def execute_command(
         raise HTTPException(status_code=500, detail=f"Ошибка выполнения команды: {error}")
 
     return {"output": output}
+
+@router.post("/auto-pentest")
+def auto_pentest(target_info: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    user_id = current_user["username"]  # или ID, как сделано у тебя
+    # Запускаем цикл
+    result = auto_pentest_loop(target_info, user_id, db)
+    return {"detail": result}
 
