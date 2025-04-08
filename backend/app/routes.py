@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from .models import UserCreate, UserResponse, Message, User, ChatHistory, CommandRequest
 from .database import SessionLocal, get_db
-from .services import create_user, save_chat_history, send_message_to_ai, execute_command_on_kali
+from .services import create_user, save_chat_history, send_message_to_ai, execute_command_on_kali, auto_pentest_loop
 from .auth import create_access_token, verify_password, get_current_user
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -101,10 +101,17 @@ def execute_command(
 
     return {"output": output}
 
+
 @router.post("/auto-pentest")
-def auto_pentest(target_info: str, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    user_id = current_user["username"]  # или ID, как сделано у тебя
-    # Запускаем цикл
-    result = auto_pentest_loop(target_info, user_id, db)
+def auto_pentest(
+    target_info: str,
+    service_name: str,  # Добавляем аргумент для имени сервиса
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    user_id = current_user["id"]  # Получаем числовой user_id, а не username
+    # Запускаем цикл пентеста
+    result = auto_pentest_loop(target_info, service_name, user_id, db)  # Передаем service_name в функцию
     return {"detail": result}
+
 

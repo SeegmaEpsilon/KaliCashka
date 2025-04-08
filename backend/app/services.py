@@ -1,8 +1,10 @@
+import re
 import paramiko
+import subprocess
 from typing import Tuple
 from .config import AI_API_KEY
 from sqlalchemy.orm import Session
-from fastapi import Depends
+from .prompts import *
 from .database import SessionLocal, get_db
 from .models import ChatHistory, User, UserCreate
 from .auth import get_password_hash
@@ -126,44 +128,127 @@ def execute_command_on_kali(command: str) -> Tuple[str, str]:
         client.close()
 
 
-def auto_pentest_loop(target_info: str, user_id: int, db: Session):
+def is_ip_reachable(ip: str) -> bool:
     """
-    Запускает автоматический цикл пентеста:
-    1. Модель генерирует команду
-    2. Команда выполняется на Kali
-    3. Результат возвращается в модель
-    4. Повторяем, пока модель не скажет "стоп"
+    Проверка доступности IP-адреса в локальной сети (с помощью ping).
     """
-    messages = get_user_chat_history(user_id, db)  # история чата
-    # Добавим от пользователя команду "Начать пентест: <target_info>"
-    messages.append(HumanMessage(content=f"Начинаем пентест {target_info}"))
+    try:
+        # Пинг до IP для Linux/Unix
+        result = subprocess.run(["ping", "-n", "1", ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    while True:
-        # 1. Генерируем ответ модели
-        ai_response = model.invoke(messages)
-        response_text = ai_response.content
+        # Если статус завершения команды == 0, значит IP доступен
+        return result.returncode == 0
+    except Exception as e:
+        print(f"Ошибка при пинге: {str(e)}")
+        return False
 
-        # 2. Добавляем в историю
-        messages.append(AIMessage(content=response_text))
 
-        # 3. Пробуем извлечь команду из ответа
-        command = extract_command_from_response(response_text)
-        if not command:
-            # Если модель не дала команду (или сказала "стоп"), завершаем цикл
+def extract_command_from_response(text: str) -> str | None:
+    """
+    Извлекает команду Linux из ответа модели.
+    Ищем строку, начинающуюся с '$' или команду в блоках с ```, если она есть.
+    """
+    for line in text.splitlines():
+        line = line.strip()
+        if line.startswith('$ '):  # Например, "$ nmap -sS 192.168.1.1"
+            return line[2:]
+
+    matches = re.findall(r'```(?:bash)?\n(.*?)\n```', text, re.DOTALL)
+    if matches:
+        return matches[0].strip().splitlines()[0]
+
+    return None
+
+
+def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Session, max_steps: int = 1) -> str:
+    """
+    Запускает автоматический цикл пентеста.
+    1. Модель генерирует команду.
+    2. Команда выполняется на Kali.
+    3. Результат возвращается в модель.
+    4. Повторяем, пока модель не скажет "стоп" или не достигнут максимальный лимит шагов.
+    """
+
+    # Получаем историю чата пользователя
+    messages = get_user_chat_history(user_id, db)
+
+    # Формируем начальный промт для пентеста
+    start_message = START_PENTEST_PROMPT.format(target_info=target_info, service_name=service_name)
+    messages.append(HumanMessage(content=start_message))
+
+    # Узнаем у модели её готовность начать пентест
+    res = model.invoke(messages)
+
+    # Добавляем ответ модели в список
+    messages.append(AIMessage(content=res.content))
+
+    print(res.content)
+
+    # Сохраняем в БД
+    save_chat_history(user_id, start_message, "Начало пентеста")
+
+    print(f"Запуск пентеста для {target_info} с сервисом {service_name}")
+
+    # Проверка доступности цели через ping
+    if not is_ip_reachable(target_info):
+        print(f"Цель {target_info} недоступна для пентеста.")
+        return f"{target_info} не доступен для пентеста."
+
+    # Запускаем цикл пентеста
+    for step in range(max_steps):
+        try:
+            # Отправляем запрос на получение новой команды от модели
+            print(f"Шаг {step + 1}: Ожидание команды от модели.")
+            new_command_prompt = GET_NEW_COMMAND_PROMPT
+            messages.append(AIMessage(content=new_command_prompt))
+            res = model.invoke(messages)  # Получаем новую команду от модели
+            response_text = res.content
+            print(response_text)
+
+            # Добавляем ответ модели в историю
+            messages.append(AIMessage(content=response_text))
+
+            # Проверяем, должна ли модель предложить новую команду
+            command = extract_command_from_response(response_text)
+            if not command:
+                stop_message = "Модель не предложила команду. Завершаю пентест."
+                messages.append(HumanMessage(content=stop_message))
+                save_chat_history(user_id, "Модель не предложила команду", stop_message)
+                print(f"Шаг {step + 1}: Пентест завершён. Модель не предложила команду.")
+                break
+
+            print(f"Шаг {step + 1}: Выполнение команды на Kali: {command}")
+            # Выполняем команду на Kali
+            output, error = execute_command_on_kali(command)
+            result_text = output if output else error
+
+            # Анализируем результат команды
+            result_analysis = RESULT_COMMAND_ANALYSIS_PROMPT.format(
+                current_command=command,
+                result_command=result_text
+            )
+            messages.append(HumanMessage(content=result_analysis))
+            save_chat_history(user_id, result_analysis, "Анализ результата команды")
+            print(f"Шаг {step + 1}: Результат команды: {result_text}")
+
+            # Проверка, завершён ли пентест (по ключевым словам в ответе модели)
+            if "Пентест завершён" in res.content:
+                completion_message = "Пентест завершён."
+                messages.append(HumanMessage(content=completion_message))
+                save_chat_history(user_id, completion_message, "Конец пентеста")
+                print(f"Шаг {step + 1}: Пентест завершён.")
+                break
+
+        except Exception as e:
+            error_message = f"Ошибка на шаге {step + 1}: {str(e)}"
+            messages.append(HumanMessage(content=error_message))
+            save_chat_history(user_id, error_message, "Ошибка выполнения")
+            print(f"Шаг {step + 1}: Ошибка выполнения: {str(e)}")
             break
 
-        # 4. Выполняем команду на Kali
-        output, error = execute_command_on_kali(command)
-        result_text = output if output else error
-
-        # 5. Сохраняем команду и результат в БД (CommandHistory)
-        save_command_history(user_id, command, result_text, db)
-
-        # 6. Передаём результат обратно в контекст как HumanMessage,
-        #    чтобы модель могла его проанализировать
-        messages.append(HumanMessage(
-            content=f"Результат команды:\n{result_text}"
-        ))
-
     return "Автоматический пентест завершён"
+
+
+
+
 
