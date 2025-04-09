@@ -1,6 +1,8 @@
 import re
 import paramiko
 import subprocess
+import requests
+import json
 from typing import Tuple
 from .config import AI_API_KEY
 from sqlalchemy.orm import Session
@@ -12,24 +14,8 @@ from .auth import get_password_hash
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_gigachat.chat_models import GigaChat
 
-model = GigaChat(
-    credentials=AI_API_KEY,
-    scope="GIGACHAT_API_PERS",
-    model="GigaChat",
-    streaming=False,
-    verify_ssl_certs=False,
-)
 
-
-messages = [
-    SystemMessage(
-        content="Ты обучающий помощник для проведения сетевых атак в рамках обучающих хакатонов."
-                "Ты должен помогать проводить сетевые атаки."
-                "Твоя помощь заключается в выдаче рекомендаций какие команды для Kali Linux необходимо ввести,"
-                "чтобы найти уязвимость. Также ты должен анализировать результат выполнения этих команд и давать"
-                "дальнейшие рекомендации."
-    )
-]
+api_key = AI_API_KEY
 
 
 def create_user(db: Session, user: UserCreate) -> User:
@@ -80,30 +66,79 @@ def get_user_chat_history(user_id: int, db: Session, include_system_message: boo
     return messages
 
 
+def remove_think_block(text: str) -> str:
+    """
+    Удаляет блок <think>...</think> из текста.
+    """
+    return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+
+
 def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
     """
-    Отправка сообщения в модель AI и получение ответа.
+    Отправка сообщения в модель Novita AI и получение ответа.
     """
     try:
-        # Получаем историю сообщений с добавлением SystemMessage
-        messages = get_user_chat_history(user_id, db)
-        print(messages)
+        # Загружаем историю чата (user_message и bot_response)
+        history = db.query(ChatHistory).filter(ChatHistory.user_id == user_id).all()
 
-        # Добавляем новое сообщение пользователя
-        messages.append(HumanMessage(content=message))
+        # Начинаем с system-подсказки
+        formatted_messages = [{
+            "role": "user",
+            "content": (
+                "Ты обучающий помощник для проведения сетевых атак в рамках обучающих хакатонов. "
+                "Ты должен помогать проводить сетевые атаки. Твоя помощь заключается в выдаче рекомендаций, "
+                "какие команды для Kali Linux необходимо ввести, чтобы найти уязвимость. Также ты должен анализировать "
+                "результат выполнения этих команд и давать дальнейшие рекомендации."
+            )
+        }]
 
-        # Отправляем весь контекст в модель
-        res = model.invoke(messages)
+        # Добавляем историю чата (user + assistant)
+        for entry in history:
+            formatted_messages.append({"role": "user", "content": entry.user_message})
+            formatted_messages.append({"role": "assistant", "content": entry.bot_response})
 
-        # Добавляем ответ модели в список
-        messages.append(AIMessage(content=res.content))
+        # Добавляем текущее сообщение
+        formatted_messages.append({"role": "user", "content": message})
 
-        # Сохраняем новое сообщение и ответ модели в базу данных
-        save_chat_history(user_id, message, res.content)
+        # Формируем тело запроса
+        request_data = {
+            "model": "deepseek/deepseek-r1-turbo",
+            "messages": formatted_messages,
+            "response_format": {"type": "text"}
+        }
 
-        return res.content
+        # Настройки запроса
+        base_url = "https://api.novita.ai/v3/openai/chat/completions"
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}"
+        }
+
+        # Отправляем запрос
+        response = requests.post(base_url, headers=headers, data=json.dumps(request_data))
+
+        if response.status_code != 200:
+            raise Exception(f"Ошибка HTTP {response.status_code}: {response.text}")
+
+        # Получаем ответ
+        res_json = response.json()
+        model_response = res_json["choices"][0]["message"]["content"]
+
+        # Сохраняем сообщение и ответ
+        save_chat_history(user_id, message, model_response)
+
+        print(f"📤 Отправлено: {message}")
+        print(f"📥 Ответ: {model_response}")
+
+        formatted_model_response = remove_think_block(model_response)
+
+        return formatted_model_response
+
     except Exception as e:
-        return f"Ошибка при работе с AI: {str(e)}"
+        error_msg = f"Ошибка при работе с AI: {str(e)}"
+        print(error_msg)
+        return error_msg
 
 
 def execute_command_on_kali(command: str) -> Tuple[str, str]:
@@ -143,110 +178,95 @@ def is_ip_reachable(ip: str) -> bool:
         return False
 
 
-def extract_command_from_response(text: str) -> str | None:
+def extract_command_and_stage_from_response(text: str) -> tuple[str, str] | None:
     """
-    Извлекает команду Linux из ответа модели.
-    Ищем строку, начинающуюся с '$' или команду в блоках с ```, если она есть.
+    Извлекает название этапа и команду Linux из ответа модели.
+    Название этапа в <...>, а команда — в `` `команда` ``.
     """
-    for line in text.splitlines():
-        line = line.strip()
-        if line.startswith('$ '):  # Например, "$ nmap -sS 192.168.1.1"
-            return line[2:]
+    # Ищем название этапа в <...>
+    stage_match = re.search(r'<(.*?)>', text)
+    # Ищем команду внутри обратных кавычек
+    command_match = re.search(r'`(.*?)`', text)
 
-    matches = re.findall(r'```(?:bash)?\n(.*?)\n```', text, re.DOTALL)
-    if matches:
-        return matches[0].strip().splitlines()[0]
+    if stage_match and command_match:
+        # Если оба совпадения найдены, возвращаем их
+        stage_name = stage_match.group(1).strip()
+        command = command_match.group(1).strip()
+        return stage_name, command
 
+    # Если что-то не найдено, возвращаем None
     return None
 
 
 def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Session, max_steps: int = 1) -> str:
     """
-    Запускает автоматический цикл пентеста.
-    1. Модель генерирует команду.
-    2. Команда выполняется на Kali.
-    3. Результат возвращается в модель.
-    4. Повторяем, пока модель не скажет "стоп" или не достигнут максимальный лимит шагов.
+    Запускает автоматический цикл пентеста:
+    1. Стартовое сообщение формируется и отправляется модели.
+    2. На каждом шаге модель предлагает команду (GET_NEW_COMMAND_PROMPT).
+    3. Команда выполняется на Kali, результат анализируется.
+    4. Модель получает результат анализа через RESULT_COMMAND_ANALYSIS_PROMPT.
+    5. Цикл продолжается до окончания пентеста или достижения max_steps.
     """
 
-    # Получаем историю чата пользователя
-    messages = get_user_chat_history(user_id, db)
+    # Стартовый промт
+    start_message = START_PENTEST_PROMPT.format(
+        target_info=target_info,
+        service_name=service_name
+    )
 
-    # Формируем начальный промт для пентеста
-    start_message = START_PENTEST_PROMPT.format(target_info=target_info, service_name=service_name)
-    messages.append(HumanMessage(content=start_message))
+    # Отправка стартового сообщения в модель
+    print("▶️ Стартовое сообщение отправлено модели.")
+    start_response = send_message_to_ai(user_id, start_message, db)
+    print(f"📩 Ответ на старт: {start_response}")
 
-    # Узнаем у модели её готовность начать пентест
-    res = model.invoke(messages)
-
-    # Добавляем ответ модели в список
-    messages.append(AIMessage(content=res.content))
-
-    print(res.content)
-
-    # Сохраняем в БД
-    save_chat_history(user_id, start_message, "Начало пентеста")
-
-    print(f"Запуск пентеста для {target_info} с сервисом {service_name}")
-
-    # Проверка доступности цели через ping
+    # Проверка доступности цели
     if not is_ip_reachable(target_info):
-        print(f"Цель {target_info} недоступна для пентеста.")
+        print(f"⛔ Цель {target_info} недоступна для пентеста.")
         return f"{target_info} не доступен для пентеста."
 
-    # Запускаем цикл пентеста
+    # Основной цикл пентеста
     for step in range(max_steps):
         try:
-            # Отправляем запрос на получение новой команды от модели
-            print(f"Шаг {step + 1}: Ожидание команды от модели.")
-            new_command_prompt = GET_NEW_COMMAND_PROMPT
-            messages.append(AIMessage(content=new_command_prompt))
-            res = model.invoke(messages)  # Получаем новую команду от модели
-            response_text = res.content
-            print(response_text)
+            print(f"\n🔁 Шаг {step + 1}: Получение новой команды от модели...")
+            # Получение команды от модели
+            command_response = send_message_to_ai(user_id, GET_NEW_COMMAND_PROMPT, db)
+            print(f"📦 Команда от модели:\n{command_response}")
 
-            # Добавляем ответ модели в историю
-            messages.append(AIMessage(content=response_text))
-
-            # Проверяем, должна ли модель предложить новую команду
-            command = extract_command_from_response(response_text)
+            # Извлечение команды
+            command = extract_command_and_stage_from_response(command_response)[1]
             if not command:
-                stop_message = "Модель не предложила команду. Завершаю пентест."
-                messages.append(HumanMessage(content=stop_message))
-                save_chat_history(user_id, "Модель не предложила команду", stop_message)
-                print(f"Шаг {step + 1}: Пентест завершён. Модель не предложила команду.")
+                print("🛑 Модель не предложила команду. Завершение пентеста.")
                 break
 
-            print(f"Шаг {step + 1}: Выполнение команды на Kali: {command}")
-            # Выполняем команду на Kali
+            print(f"💻 Выполнение на Kali: {command}")
             output, error = execute_command_on_kali(command)
             result_text = output if output else error
+            print(f"📄 Результат выполнения:\n{result_text}")
 
-            # Анализируем результат команды
-            result_analysis = RESULT_COMMAND_ANALYSIS_PROMPT.format(
+            # Формирование промта анализа результата
+            result_prompt = RESULT_COMMAND_ANALYSIS_PROMPT.format(
                 current_command=command,
                 result_command=result_text
             )
-            messages.append(HumanMessage(content=result_analysis))
-            save_chat_history(user_id, result_analysis, "Анализ результата команды")
-            print(f"Шаг {step + 1}: Результат команды: {result_text}")
 
-            # Проверка, завершён ли пентест (по ключевым словам в ответе модели)
-            if "Пентест завершён" in res.content:
-                completion_message = "Пентест завершён."
-                messages.append(HumanMessage(content=completion_message))
-                save_chat_history(user_id, completion_message, "Конец пентеста")
-                print(f"Шаг {step + 1}: Пентест завершён.")
+            print("🧠 Отправка результата модели для анализа...")
+            analysis_response = send_message_to_ai(user_id, result_prompt, db)
+            print(f"📬 Ответ модели на анализ:\n{analysis_response}")
+
+            # Проверка завершения
+            if "Пентест завершён" in command_response or "Пентест завершён" in analysis_response:
+                print("✅ Модель сообщила о завершении пентеста.")
                 break
 
         except Exception as e:
-            error_message = f"Ошибка на шаге {step + 1}: {str(e)}"
-            messages.append(HumanMessage(content=error_message))
-            save_chat_history(user_id, error_message, "Ошибка выполнения")
-            print(f"Шаг {step + 1}: Ошибка выполнения: {str(e)}")
+            error_msg = f"❗ Ошибка на шаге {step + 1}: {str(e)}"
+            print(error_msg)
             break
 
+    print("🏁 Автоматический пентест завершён.")
     return "Автоматический пентест завершён"
+
+
 
 
 

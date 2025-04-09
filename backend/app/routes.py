@@ -10,6 +10,7 @@ from .database import SessionLocal, get_db
 from .services import create_user, save_chat_history, send_message_to_ai, execute_command_on_kali, auto_pentest_loop
 from .auth import create_access_token, verify_password, get_current_user
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES
+from .prompts import *
 
 
 # Создаём маршрутизатор
@@ -55,7 +56,9 @@ def chat(message: Message, db: Session = Depends(get_db), current_user: dict = D
     Эндпоинт для отправки сообщения в GigaChat.
     """
     user_id = current_user["id"]  # Используем числовой ID пользователя
-    response = send_message_to_ai(user_id, message.message, db)
+
+    chat_prompt = DEFAULT_CHAT_PROMPT.format(prompt_text=message.message)
+    response = send_message_to_ai(user_id, chat_prompt, db)
     return {"response": response}
 
 
