@@ -1,4 +1,6 @@
+import os
 import re
+import time
 import paramiko
 import subprocess
 import requests
@@ -141,11 +143,10 @@ def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
         return error_msg
 
 
-def execute_command_on_kali(command: str) -> Tuple[str, str]:
+def execute_command_on_kali(command: str, timeout: int = 60) -> Tuple[str, str]:
     """
-    Выполняет команду на удалённой машине Kali Linux через SSH.
+    Выполняет команду на удалённой машине Kali Linux через SSH с тайм-аутом.
     """
-    import os
     host = os.getenv("KALI_SSH_HOST")  # IP Kali Linux
     port = int(os.getenv("KALI_SSH_PORT"))  # Порт SSH
     username = os.getenv("KALI_SSH_USER")  # Имя пользователя SSH
@@ -156,9 +157,24 @@ def execute_command_on_kali(command: str) -> Tuple[str, str]:
     try:
         client.connect(host, port, username, password)
         stdin, stdout, stderr = client.exec_command(command)
+
+        # Ожидаем завершения команды с тайм-аутом
+        start_time = time.time()
+        while True:
+            if stdout.channel.exit_status_ready():
+                break
+            if time.time() - start_time > timeout:
+                stdout.channel.close()
+                stderr.channel.close()
+                return "", "Команда превысила максимальное время ожидания."
+
+            time.sleep(0.5)  # Пауза, чтобы не нагружать процессор
+
         output = stdout.read().decode('utf-8').strip()
         error = stderr.read().decode('utf-8').strip()
+
         return output, error
+
     finally:
         client.close()
 
@@ -198,7 +214,7 @@ def extract_command_and_stage_from_response(text: str) -> tuple[str, str] | None
     return None
 
 
-def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Session, max_steps: int = 1) -> str:
+def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Session, max_steps: int = 10) -> str:
     """
     Запускает автоматический цикл пентеста:
     1. Стартовое сообщение формируется и отправляется модели.
@@ -230,10 +246,10 @@ def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Ses
             print(f"\n🔁 Шаг {step + 1}: Получение новой команды от модели...")
             # Получение команды от модели
             command_response = send_message_to_ai(user_id, GET_NEW_COMMAND_PROMPT, db)
-            print(f"📦 Команда от модели:\n{command_response}")
 
             # Извлечение команды
             command = extract_command_and_stage_from_response(command_response)[1]
+            print(f"📦 Команда от модели:\n{command}")
             if not command:
                 print("🛑 Модель не предложила команду. Завершение пентеста.")
                 break
