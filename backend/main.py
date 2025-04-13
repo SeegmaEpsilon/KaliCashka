@@ -8,7 +8,7 @@ init_db()
 
 # Создаём приложение FastAPI
 app = FastAPI(
-    title="KaliCashka API",
+    title="KaliKashka Stepan",
     description="Бэкенд для управления командами Kali Linux через чат",
     version="1.0.0",
 )

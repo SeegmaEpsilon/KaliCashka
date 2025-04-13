@@ -128,12 +128,9 @@ def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
         model_response = res_json["choices"][0]["message"]["content"]
 
         # Сохраняем сообщение и ответ
-        save_chat_history(user_id, message, model_response)
-
-        print(f"📤 Отправлено: {message}")
-        print(f"📥 Ответ: {model_response}")
-
         formatted_model_response = remove_think_block(model_response)
+
+        save_chat_history(user_id, message, formatted_model_response)
 
         return formatted_model_response
 
@@ -214,6 +211,15 @@ def extract_command_and_stage_from_response(text: str) -> tuple[str, str] | None
     return None
 
 
+def extract_result_from_response(analysis_response: str) -> str:
+    """
+    Извлекает содержимое внутри треугольных скобок из строки ответа.
+    Пример: "Результат: <ошибка подключения>" -> "ошибка подключения"
+    """
+    match = re.search(r'<(.*?)>', analysis_response)
+    return match.group(1) if match else ""
+
+
 def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Session, max_steps: int = 10) -> str:
     """
     Запускает автоматический цикл пентеста:
@@ -233,7 +239,7 @@ def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Ses
     # Отправка стартового сообщения в модель
     print("▶️ Стартовое сообщение отправлено модели.")
     start_response = send_message_to_ai(user_id, start_message, db)
-    print(f"📩 Ответ на старт: {start_response}")
+    print(f"📩 Ответ на старт: {extract_result_from_response(start_response)}")
 
     # Проверка доступности цели
     if not is_ip_reachable(target_info):
@@ -248,7 +254,7 @@ def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Ses
             command_response = send_message_to_ai(user_id, GET_NEW_COMMAND_PROMPT, db)
 
             # Извлечение команды
-            command = extract_command_and_stage_from_response(command_response)[1]
+            stage, command = extract_command_and_stage_from_response(command_response)
             print(f"📦 Команда от модели:\n{command}")
             if not command:
                 print("🛑 Модель не предложила команду. Завершение пентеста.")
@@ -267,7 +273,9 @@ def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Ses
 
             print("🧠 Отправка результата модели для анализа...")
             analysis_response = send_message_to_ai(user_id, result_prompt, db)
-            print(f"📬 Ответ модели на анализ:\n{analysis_response}")
+            formatted_analysis_response = remove_think_block(analysis_response)
+            result_stage = extract_result_from_response(formatted_analysis_response)
+            print(f"📬 Ответ модели на анализ:\n{result_stage}")
 
             # Проверка завершения
             if "Пентест завершён" in command_response or "Пентест завершён" in analysis_response:

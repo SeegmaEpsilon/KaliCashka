@@ -68,7 +68,7 @@ def get_user_chat_history(db: Session = Depends(get_db), current_user: dict = De
     Эндпоинт для получения истории чата текущего пользователя.
     """
     username = current_user["username"]  # Извлекаем логин пользователя
-    history = db.query(ChatHistory).filter(ChatHistory.user_id == username).all()
+    history = db.query(ChatHistory).filter(ChatHistory.user_id == current_user["id"]).all()
 
     # Преобразуем объекты в JSON-совместимый формат
     serialized_history = [
@@ -84,7 +84,7 @@ def clear_chat_history(db: Session = Depends(get_db), current_user: dict = Depen
     Эндпоинт для очистки истории чата текущего пользователя.
     """
     username = current_user["username"]  # Используем логин пользователя
-    deleted_count = db.query(ChatHistory).filter(ChatHistory.user_id == username).delete()
+    deleted_count = db.query(ChatHistory).filter(ChatHistory.user_id == current_user["id"]).delete()
     db.commit()
     return {"message": f"История чата очищена. Удалено записей: {deleted_count}"}
 
