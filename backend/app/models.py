@@ -60,3 +60,8 @@ class CommandHistory(Base):
     user_id = Column(Integer)  # Внешний ключ можно добавить позже
     command = Column(Text)
     result = Column(Text)
+
+
+class PentestRequest(BaseModel):
+    target: str        # IP/хост
+    service: str       # “http”, “ssh” …

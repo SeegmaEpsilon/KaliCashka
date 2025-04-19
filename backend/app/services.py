@@ -13,11 +13,55 @@ from .database import SessionLocal, get_db
 from .models import ChatHistory, User, UserCreate
 from .auth import get_password_hash
 
+import asyncio, json
+from fastapi import WebSocket
+from typing import Dict, List
+
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-from langchain_gigachat.chat_models import GigaChat
 
 
 api_key = AI_API_KEY
+
+
+class WebSocketManager:
+    def __init__(self) -> None:
+        self.active: Dict[str, List[WebSocket]] = {}
+
+    async def connect(self, ws: WebSocket, user_id: str) -> None:
+        await ws.accept()
+        self.active.setdefault(user_id, []).append(ws)
+
+    def disconnect(self, ws: WebSocket, user_id: str) -> None:
+        if user_id in self.active and ws in self.active[user_id]:
+            self.active[user_id].remove(ws)
+
+    async def send(self, user_id: str, payload: dict | str) -> None:
+        if isinstance(payload, str):
+            payload = {"message": payload}
+        # Для унификации ‒ всегда строки JSON
+        text = json.dumps(payload, ensure_ascii=False)
+        for ws in self.active.get(user_id, []):
+            await ws.send_text(text)
+
+
+ws_manager = WebSocketManager()
+
+
+# services.py
+async def _emit(user_id: str, stage: str, data: dict | str) -> None:
+    """
+    Отправляет клиенту сообщение вида {"stage": <stage>, ...}
+    и одновременно выводит его в консоль разработчика.
+    """
+    if isinstance(data, str):
+        data = {"message": data}
+    data["stage"] = stage
+
+    # 👉 выводим в консоль
+    print(f"[WS → {user_id}] {json.dumps(data, ensure_ascii=False)}", flush=True)
+
+    # отправляем по веб‑сокету
+    await ws_manager.send(user_id, data)
 
 
 def create_user(db: Session, user: UserCreate) -> User:
@@ -220,74 +264,63 @@ def extract_result_from_response(analysis_response: str) -> str:
     return match.group(1) if match else ""
 
 
-def auto_pentest_loop(target_info: str, service_name: str, user_id: str, db: Session, max_steps: int = 10) -> str:
-    """
-    Запускает автоматический цикл пентеста:
-    1. Стартовое сообщение формируется и отправляется модели.
-    2. На каждом шаге модель предлагает команду (GET_NEW_COMMAND_PROMPT).
-    3. Команда выполняется на Kali, результат анализируется.
-    4. Модель получает результат анализа через RESULT_COMMAND_ANALYSIS_PROMPT.
-    5. Цикл продолжается до окончания пентеста или достижения max_steps.
-    """
+async def auto_pentest_loop(          # ← теперь async!
+    target_info: str,
+    service_name: str,
+    user_id: str,
+    db: Session,
+    max_steps: int = 10,
+) -> str:
+    await _emit(user_id, "init", f"Запуск автопентеста против {target_info}")
 
-    # Стартовый промт
-    start_message = START_PENTEST_PROMPT.format(
-        target_info=target_info,
-        service_name=service_name
-    )
+    start_msg = START_PENTEST_PROMPT.format(target_info=target_info,
+                                            service_name=service_name)
+    await _emit(user_id, "prompt", "Отправка стартового сообщения модели")
+    start_resp = send_message_to_ai(user_id, start_msg, db)
+    await _emit(user_id, "prompt_response",
+                extract_result_from_response(start_resp))
 
-    # Отправка стартового сообщения в модель
-    print("▶️ Стартовое сообщение отправлено модели.")
-    start_response = send_message_to_ai(user_id, start_message, db)
-    print(f"📩 Ответ на старт: {extract_result_from_response(start_response)}")
-
-    # Проверка доступности цели
     if not is_ip_reachable(target_info):
-        print(f"⛔ Цель {target_info} недоступна для пентеста.")
-        return f"{target_info} не доступен для пентеста."
+        text = f"⛔ Цель {target_info} недоступна."
+        await _emit(user_id, "unreachable", text)
+        return text
 
-    # Основной цикл пентеста
     for step in range(max_steps):
         try:
-            print(f"\n🔁 Шаг {step + 1}: Получение новой команды от модели...")
-            # Получение команды от модели
-            command_response = send_message_to_ai(user_id, GET_NEW_COMMAND_PROMPT, db)
+            await _emit(user_id, "step_start", {"step": step + 1})
 
-            # Извлечение команды
-            stage, command = extract_command_and_stage_from_response(command_response)
-            print(f"📦 Команда от модели:\n{command}")
-            if not command:
-                print("🛑 Модель не предложила команду. Завершение пентеста.")
+            cmd_resp = send_message_to_ai(user_id, GET_NEW_COMMAND_PROMPT, db)
+            extract = extract_command_and_stage_from_response(cmd_resp)
+            if not extract:
+                await _emit(user_id, "no_command", "Команда не получена, завершаю.")
                 break
+            stage_name, command = extract
+            await _emit(user_id, "command", {"stage_name": stage_name,
+                                             "command": command})
 
-            print(f"💻 Выполнение на Kali: {command}")
             output, error = execute_command_on_kali(command)
-            result_text = output if output else error
-            print(f"📄 Результат выполнения:\n{result_text}")
+            result = output or error
+            await _emit(user_id, "command_result",
+                        {"stage_name": stage_name, "result": result})
 
-            # Формирование промта анализа результата
-            result_prompt = RESULT_COMMAND_ANALYSIS_PROMPT.format(
-                current_command=command,
-                result_command=result_text
-            )
+            analysis_prompt = RESULT_COMMAND_ANALYSIS_PROMPT.format(
+                current_command=command, result_command=result)
+            analysis_resp = send_message_to_ai(user_id, analysis_prompt, db)
+            analysis = extract_result_from_response(
+                remove_think_block(analysis_resp))
+            await _emit(user_id, "analysis",
+                        {"stage_name": stage_name, "analysis": analysis})
 
-            print("🧠 Отправка результата модели для анализа...")
-            analysis_response = send_message_to_ai(user_id, result_prompt, db)
-            formatted_analysis_response = remove_think_block(analysis_response)
-            result_stage = extract_result_from_response(formatted_analysis_response)
-            print(f"📬 Ответ модели на анализ:\n{result_stage}")
-
-            # Проверка завершения
-            if "Пентест завершён" in command_response or "Пентест завершён" in analysis_response:
-                print("✅ Модель сообщила о завершении пентеста.")
+            if "Пентест завершён" in (cmd_resp + analysis_resp):
+                await _emit(user_id, "complete", "Пентест завершён ✅")
                 break
 
-        except Exception as e:
-            error_msg = f"❗ Ошибка на шаге {step + 1}: {str(e)}"
-            print(error_msg)
+        except Exception as exc:
+            await _emit(user_id, "error",
+                        f"Ошибка на шаге {step + 1}: {str(exc)}")
             break
 
-    print("🏁 Автоматический пентест завершён.")
+    await _emit(user_id, "finished", "Автоматический пентест завершён")
     return "Автоматический пентест завершён"
 
 

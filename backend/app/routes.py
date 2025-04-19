@@ -5,6 +5,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
+from fastapi import BackgroundTasks              # ↑ добавьте импорт
+from .models import PentestRequest
+
 from .models import UserCreate, UserResponse, Message, User, ChatHistory, CommandRequest
 from .database import SessionLocal, get_db
 from .services import create_user, save_chat_history, send_message_to_ai, execute_command_on_kali, auto_pentest_loop
@@ -106,15 +109,19 @@ def execute_command(
 
 
 @router.post("/auto-pentest")
-def auto_pentest(
-    target_info: str,
-    service_name: str,  # Добавляем аргумент для имени сервиса
+async def auto_pentest(
+    req: PentestRequest,
+    background: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
 ):
-    user_id = current_user["id"]  # Получаем числовой user_id, а не username
-    # Запускаем цикл пентеста
-    result = auto_pentest_loop(target_info, service_name, user_id, db)  # Передаем service_name в функцию
-    return {"detail": result}
+    background.add_task(
+        auto_pentest_loop,
+        req.target,
+        req.service,
+        current_user["username"],               # или ["id"] — как используете в ws_manager
+        db,
+    )
+    return {"detail": "started"}
 
 
