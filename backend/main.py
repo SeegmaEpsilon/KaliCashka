@@ -1,9 +1,7 @@
 from fastapi import FastAPI, WebSocket, Depends
 from app.routes import router
 from app.database import init_db
-from app.services import ws_manager
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import BackgroundTasks
 from app.ws import router_ws
 
 
@@ -18,8 +16,9 @@ app = FastAPI(
 )
 
 # Подключаем маршруты из файла routes.py
-app.include_router(router)
 app.include_router(router_ws)
+app.include_router(router)
+
 
 app.add_middleware(
     CORSMiddleware,

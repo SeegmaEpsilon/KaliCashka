@@ -10,7 +10,7 @@ from .models import PentestRequest
 
 from .models import UserCreate, UserResponse, Message, User, ChatHistory, CommandRequest
 from .database import SessionLocal, get_db
-from .services import create_user, save_chat_history, send_message_to_ai, execute_command_on_kali, auto_pentest_loop
+from .services import create_user, save_chat_history, send_message_to_ai, execute_command_on_kali, auto_pentest_loop, test_ws_output
 from .auth import create_access_token, verify_password, get_current_user
 from .config import ACCESS_TOKEN_EXPIRE_MINUTES
 from .prompts import *
@@ -123,5 +123,12 @@ async def auto_pentest(
         db,
     )
     return {"detail": "started"}
+
+
+@router.get("/test_ws")
+async def test_ws_endpoint():
+    result = await test_ws_output("ws")
+    return {"message": result}
+
 
 

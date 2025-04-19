@@ -50,18 +50,19 @@ ws_manager = WebSocketManager()
 # services.py
 async def _emit(user_id: str, stage: str, data: dict | str) -> None:
     """
-    Отправляет клиенту сообщение вида {"stage": <stage>, ...}
-    и одновременно выводит его в консоль разработчика.
+    Отправляет клиенту сообщение в сокет 'ws_session', независимо от user_id.
     """
     if isinstance(data, str):
         data = {"message": data}
     data["stage"] = stage
 
-    # 👉 выводим в консоль
-    print(f"[WS → {user_id}] {json.dumps(data, ensure_ascii=False)}", flush=True)
+    # 🔧 Принудительно отправляем только в канал "ws_session"
+    target_id = "ws_session"
 
-    # отправляем по веб‑сокету
-    await ws_manager.send(user_id, data)
+    print(f"[WS → {target_id}] {json.dumps(data, ensure_ascii=False)}", flush=True)
+
+    await ws_manager.send(target_id, data)
+
 
 
 def create_user(db: Session, user: UserCreate) -> User:
@@ -324,6 +325,9 @@ async def auto_pentest_loop(          # ← теперь async!
     return "Автоматический пентест завершён"
 
 
+async def test_ws_output(user_id: str):
+    await _emit(user_id, "test", "Тест отправки сообщения по WS")
+    return "Тест отправки сообщения по WS"
 
 
 

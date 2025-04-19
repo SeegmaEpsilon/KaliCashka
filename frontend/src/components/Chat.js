@@ -10,7 +10,10 @@ const Chat = ({ token, isDarkTheme }) => {
         targetAddress: '',
         targetName: ''
     });
+    const [pentestResults, setPentestResults] = useState(['Ожидание результатов...']);
+    const [showPentestResults, setShowPentestResults] = useState(false);
     const chatContainerRef = useRef(null); // Ссылка на контейнер чата
+    const wsRef = useRef(null);
 
     // Создаем стили для скроллбара
     useEffect(() => {
@@ -47,6 +50,11 @@ const Chat = ({ token, isDarkTheme }) => {
         return () => document.head.removeChild(style);
     }, [isDarkTheme]);
 
+    // Добавляем новый useEffect для отслеживания изменений в pentestResults
+    useEffect(() => {
+        console.log('pentestResults изменился:', pentestResults);
+    }, [pentestResults]);
+
     useEffect(() => {
         const fetchHistory = async () => {
             try {
@@ -63,6 +71,42 @@ const Chat = ({ token, isDarkTheme }) => {
         };
 
         fetchHistory();
+
+        // Устанавливаем WebSocket соединение при старте приложения
+        console.log('Начало установки WebSocket соединения...');
+        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/ws_session`);
+        wsRef.current = ws;
+        
+        ws.onopen = () => {
+            console.log('WebSocket соединение успешно установлено');
+        };
+        
+        ws.onclose = (e) => {
+            console.log('WebSocket соединение закрыто:', e.code, e.reason);
+        };
+        
+        ws.onerror = (e) => {
+            console.error('WebSocket ошибка:', e);
+        };
+        
+        ws.onmessage = (e) => {
+            console.log('Получено WebSocket сообщение:', e.data);
+            try {
+                const data = JSON.parse(e.data);
+                console.log('Распарсенные данные:', data);
+                setPentestResults(prev => [...prev, JSON.stringify(data, null, 2)]);
+            } catch (e) {
+                console.error('Ошибка при обработке сообщения:', e);
+                setPentestResults(prev => [...prev, e.data]);
+            }
+        };
+        
+        return () => {
+            console.log('Закрытие WebSocket соединения...');
+            if (wsRef.current) {
+                wsRef.current.close();
+            }
+        };
     }, [token]);
 
     // Автоматическая прокрутка при первом рендере и обновлении истории
@@ -350,19 +394,49 @@ const Chat = ({ token, isDarkTheme }) => {
         }
     };
 
-    const handleStartPentest = () => {
-        console.log('Запуск пентеста:', pentestData);
+    const handleStartPentest = async () => {
         if (!pentestData.targetAddress || !pentestData.targetName) {
             alert('Пожалуйста, заполните все поля');
             return;
         }
-        
-        setShowPentestForm(false);
-        setHistory(prev => [...prev, {
-            user: `Вы: Запущен автоматический пентест для цели ${pentestData.targetName} (${pentestData.targetAddress})`,
-            bot: null
-        }]);
-        setPentestData({ targetAddress: '', targetName: '' });
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/auto-pentest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    target: pentestData.targetAddress,
+                    service: pentestData.targetName
+                })
+            });
+
+            if (response.ok) {
+                setShowPentestForm(false);
+                setShowPentestResults(true);
+                setPentestResults(['Ожидание результатов пентеста...']);
+                setHistory(prev => [...prev, {
+                    user: `Вы: Запущен автоматический пентест для цели ${pentestData.targetName} (${pentestData.targetAddress})`,
+                    bot: null
+                }]);
+            } else {
+                const error = await response.json();
+                alert('Ошибка при запуске пентеста: ' + (error.detail || 'Неизвестная ошибка'));
+            }
+        } catch (error) {
+            console.error('Ошибка при запуске пентеста:', error);
+            alert('Ошибка при запуске пентеста');
+        }
+    };
+
+    const handleClosePentestResults = () => {
+        setShowPentestResults(false);
+        setPentestResults([]);
+        if (wsRef.current) {
+            wsRef.current.close();
+        }
     };
 
     const handleCancelPentest = () => {
@@ -460,6 +534,79 @@ const Chat = ({ token, isDarkTheme }) => {
                     <div className="text-center mt-3">
                         <div className="spinner-border text-light" role="status">
                             <span className="sr-only">Загрузка...</span>
+                        </div>
+                    </div>
+                )}
+
+                {/* Модальное окно результатов пентеста */}
+                {showPentestResults && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        zIndex: 1000,
+                    }}>
+                        <div style={{
+                            backgroundColor: isDarkTheme ? '#4a4d57' : '#ffffff',
+                            padding: '20px',
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                            width: '90%',
+                            maxWidth: '600px',
+                            maxHeight: '80vh',
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}>
+                            <h3 style={{ 
+                                marginBottom: '20px',
+                                color: isDarkTheme ? '#ffffff' : '#000000',
+                                fontSize: '18px',
+                                textAlign: 'center'
+                            }}>
+                                Результаты пентеста
+                            </h3>
+                            <div style={{
+                                flex: 1,
+                                overflowY: 'auto',
+                                backgroundColor: isDarkTheme ? '#2d2d2d' : '#f5f5f5',
+                                padding: '12px',
+                                borderRadius: '8px',
+                                marginBottom: '15px',
+                                fontFamily: 'monospace',
+                                fontSize: '14px',
+                                color: isDarkTheme ? '#ffffff' : '#000000',
+                                whiteSpace: 'pre-wrap',
+                            }}>
+                                {pentestResults.map((result, index) => (
+                                    <div key={index} style={{ marginBottom: '8px' }}>
+                                        {result}
+                                    </div>
+                                ))}
+                            </div>
+                            <div style={{ 
+                                display: 'flex',
+                                justifyContent: 'flex-end'
+                            }}>
+                                <button
+                                    onClick={handleClosePentestResults}
+                                    style={{
+                                        padding: '8px 16px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        backgroundColor: isDarkTheme ? '#666' : '#e0e0e0',
+                                        color: isDarkTheme ? '#ffffff' : '#000000',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Закрыть
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
