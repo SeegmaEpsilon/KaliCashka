@@ -1,5 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { debounce } from 'lodash';
+import ReactFlow, { 
+    Background, 
+    Controls,
+    MarkerType
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+
+// Добавляем стили для React Flow
+const flowStyles = {
+    background: '#f8f8f8',
+    width: '100%',
+    height: '100%',
+};
 
 const Chat = ({ token, isDarkTheme }) => {
     const [message, setMessage] = useState('');
@@ -14,6 +27,8 @@ const Chat = ({ token, isDarkTheme }) => {
     const [showPentestResults, setShowPentestResults] = useState(false);
     const chatContainerRef = useRef(null); // Ссылка на контейнер чата
     const wsRef = useRef(null);
+    const [nodes, setNodes] = useState([]);
+    const [edges, setEdges] = useState([]);
 
     // Создаем стили для скроллбара
     useEffect(() => {
@@ -55,23 +70,134 @@ const Chat = ({ token, isDarkTheme }) => {
         console.log('pentestResults изменился:', pentestResults);
     }, [pentestResults]);
 
-    useEffect(() => {
-        const fetchHistory = async () => {
-            try {
-                const response = await fetch('http://127.0.0.1:8000/chat-history', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                setHistory(data.history || []);
-            } catch (error) {
-                console.error('Ошибка при загрузке истории:', error);
+    // Функция для создания узлов и рёбер на основе сообщений
+    const updateGraph = useCallback((message) => {
+        try {
+            const data = JSON.parse(message);
+            
+            // Пропускаем технические этапы
+            if (['step_start', 'command_result'].includes(data.stage)) {
+                return;
             }
-        };
 
+            // Форматируем сообщение в зависимости от типа этапа
+            let label = '';
+            switch (data.stage) {
+                case 'init':
+                    label = data.message;
+                    break;
+                case 'prompt':
+                    return; // Пропускаем этап prompt
+                case 'prompt_response':
+                    label = data.message;
+                    break;
+                case 'command':
+                    label = data.stage_name;
+                    break;
+                case 'analysis':
+                    label = data.analysis;
+                    break;
+                case 'unreachable':
+                    label = `❌ Ошибка: ${data.message}`;
+                    break;
+                case 'complete':
+                    label = `✅ ${data.message}`;
+                    break;
+                case 'error':
+                    label = `❌ ${data.message}`;
+                    break;
+                case 'finished':
+                    label = `🏁 ${data.message}`;
+                    break;
+                default:
+                    label = data.message || JSON.stringify(data);
+            }
+
+            setNodes((nodes) => {
+                const newNode = {
+                    id: `${data.stage}-${nodes.length}`,
+                    position: { x: 250, y: nodes.length * 100 },
+                    data: { label },
+                    style: {
+                        background: isDarkTheme ? '#4a4d57' : '#fff',
+                        color: isDarkTheme ? '#fff' : '#000',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        padding: '10px',
+                        width: 'auto',
+                        minWidth: '200px',
+                        maxWidth: '400px',
+                        fontSize: '14px',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    },
+                };
+
+                // Если это первый узел, просто добавляем его
+                if (nodes.length === 0) {
+                    return [newNode];
+                }
+
+                // Добавляем новый узел и создаём ребро к предыдущему
+                setEdges((edges) => [
+                    ...edges,
+                    {
+                        id: `e${nodes.length-1}-${nodes.length}`,
+                        source: nodes[nodes.length - 1].id,
+                        target: newNode.id,
+                        type: 'smoothstep',
+                        animated: true,
+                        style: { 
+                            stroke: isDarkTheme ? '#888' : '#666',
+                            strokeWidth: 2,
+                        },
+                        markerEnd: {
+                            type: MarkerType.ArrowClosed,
+                            color: isDarkTheme ? '#888' : '#666',
+                        },
+                    },
+                ]);
+
+                return [...nodes, newNode];
+            });
+        } catch (e) {
+            console.error('Ошибка при обновлении графа:', e);
+        }
+    }, [isDarkTheme]);
+
+    // Загрузка истории чата при монтировании компонента
+    useEffect(() => {
         fetchHistory();
+    }, []);
 
+    const fetchHistory = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('Token not found');
+                return;
+            }
+
+            const response = await fetch('http://127.0.0.1:8000/chat-history', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setHistory(data.history || []);
+        } catch (error) {
+            console.error('Error fetching chat history:', error);
+            setHistory([]);
+        }
+    };
+
+    useEffect(() => {
         // Устанавливаем WebSocket соединение при старте приложения
         console.log('Начало установки WebSocket соединения...');
         const ws = new WebSocket(`ws://127.0.0.1:8000/ws/ws_session`);
@@ -93,11 +219,55 @@ const Chat = ({ token, isDarkTheme }) => {
             console.log('Получено WebSocket сообщение:', e.data);
             try {
                 const data = JSON.parse(e.data);
-                console.log('Распарсенные данные:', data);
-                setPentestResults(prev => [...prev, JSON.stringify(data, null, 2)]);
-            } catch (e) {
-                console.error('Ошибка при обработке сообщения:', e);
+                
+                // Обновляем граф
+                updateGraph(e.data);
+                
+                // Добавляем сообщение в историю чата
+                if (!['step_start', 'command_result'].includes(data.stage)) {
+                    let message = '';
+                    switch (data.stage) {
+                        case 'init':
+                            message = data.message;
+                            break;
+                        case 'prompt_response':
+                            message = data.message;
+                            break;
+                        case 'command':
+                            message = data.stage_name;
+                            break;
+                        case 'analysis':
+                            message = data.analysis;
+                            break;
+                        case 'unreachable':
+                            message = `❌ Ошибка: ${data.message}`;
+                            break;
+                        case 'complete':
+                            message = `✅ ${data.message}`;
+                            break;
+                        case 'error':
+                            message = `❌ ${data.message}`;
+                            break;
+                        case 'finished':
+                            message = `🏁 ${data.message}`;
+                            break;
+                        default:
+                            message = data.message || JSON.stringify(data);
+                    }
+                    
+                    if (message) {
+                        setHistory(prev => [...prev, { bot: message }]);
+                    }
+                }
+                
+                // Обновляем результаты пентеста
                 setPentestResults(prev => [...prev, e.data]);
+                
+                // Показываем окно с результатами, если оно еще не открыто
+                setShowPentestResults(true);
+                
+            } catch (error) {
+                console.error('Ошибка при обработке WebSocket сообщения:', error);
             }
         };
         
@@ -107,7 +277,7 @@ const Chat = ({ token, isDarkTheme }) => {
                 wsRef.current.close();
             }
         };
-    }, [token]);
+    }, [token, updateGraph]);
 
     // Автоматическая прокрутка при первом рендере и обновлении истории
     useEffect(() => {
@@ -537,180 +707,9 @@ const Chat = ({ token, isDarkTheme }) => {
                         </div>
                     </div>
                 )}
-
-                {/* Модальное окно результатов пентеста */}
-                {showPentestResults && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        zIndex: 1000,
-                    }}>
-                        <div style={{
-                            backgroundColor: isDarkTheme ? '#4a4d57' : '#ffffff',
-                            padding: '20px',
-                            borderRadius: '12px',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                            width: '90%',
-                            maxWidth: '600px',
-                            maxHeight: '80vh',
-                            display: 'flex',
-                            flexDirection: 'column',
-                        }}>
-                            <h3 style={{ 
-                                marginBottom: '20px',
-                                color: isDarkTheme ? '#ffffff' : '#000000',
-                                fontSize: '18px',
-                                textAlign: 'center'
-                            }}>
-                                Результаты пентеста
-                            </h3>
-                            <div style={{
-                                flex: 1,
-                                overflowY: 'auto',
-                                backgroundColor: isDarkTheme ? '#2d2d2d' : '#f5f5f5',
-                                padding: '12px',
-                                borderRadius: '8px',
-                                marginBottom: '15px',
-                                fontFamily: 'monospace',
-                                fontSize: '14px',
-                                color: isDarkTheme ? '#ffffff' : '#000000',
-                                whiteSpace: 'pre-wrap',
-                            }}>
-                                {pentestResults.map((result, index) => (
-                                    <div key={index} style={{ marginBottom: '8px' }}>
-                                        {result}
-                                    </div>
-                                ))}
-                            </div>
-                            <div style={{ 
-                                display: 'flex',
-                                justifyContent: 'flex-end'
-                            }}>
-                                <button
-                                    onClick={handleClosePentestResults}
-                                    style={{
-                                        padding: '8px 16px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        backgroundColor: isDarkTheme ? '#666' : '#e0e0e0',
-                                        color: isDarkTheme ? '#ffffff' : '#000000',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Закрыть
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Модальное окно пентеста */}
-                {showPentestForm && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        zIndex: 1000,
-                    }}>
-                        <div style={{
-                            backgroundColor: isDarkTheme ? '#4a4d57' : '#ffffff',
-                            padding: '20px',
-                            borderRadius: '12px',
-                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                            width: '80%',
-                            maxWidth: '400px',
-                        }}>
-                            <h3 style={{ 
-                                marginBottom: '20px',
-                                color: isDarkTheme ? '#ffffff' : '#000000',
-                                fontSize: '18px',
-                                textAlign: 'center'
-                            }}>
-                                Автоматический пентест
-                            </h3>
-                            <div style={{ marginBottom: '15px' }}>
-                                <input
-                                    type="text"
-                                    placeholder="Адрес цели"
-                                    value={pentestData.targetAddress}
-                                    onChange={(e) => setPentestData(prev => ({ ...prev, targetAddress: e.target.value }))}
-                                    style={{
-                                        width: '100%',
-                                        padding: '8px 12px',
-                                        borderRadius: '8px',
-                                        border: isDarkTheme ? '1px solid #666' : '1px solid #ddd',
-                                        backgroundColor: isDarkTheme ? '#545762' : '#ffffff',
-                                        color: isDarkTheme ? '#ffffff' : '#000000',
-                                        marginBottom: '10px',
-                                        outline: 'none'
-                                    }}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Название цели"
-                                    value={pentestData.targetName}
-                                    onChange={(e) => setPentestData(prev => ({ ...prev, targetName: e.target.value }))}
-                                    style={{
-                                        width: '100%',
-                                        padding: '8px 12px',
-                                        borderRadius: '8px',
-                                        border: isDarkTheme ? '1px solid #666' : '1px solid #ddd',
-                                        backgroundColor: isDarkTheme ? '#545762' : '#ffffff',
-                                        color: isDarkTheme ? '#ffffff' : '#000000',
-                                        outline: 'none'
-                                    }}
-                                />
-                            </div>
-                            <div style={{ 
-                                display: 'flex',
-                                gap: '10px',
-                                justifyContent: 'flex-end'
-                            }}>
-                                <button
-                                    onClick={handleCancelPentest}
-                                    style={{
-                                        padding: '8px 16px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        backgroundColor: isDarkTheme ? '#666' : '#e0e0e0',
-                                        color: isDarkTheme ? '#ffffff' : '#000000',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Отмена
-                                </button>
-                                <button
-                                    onClick={handleStartPentest}
-                                    style={{
-                                        padding: '8px 16px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        backgroundColor: '#4CAF50',
-                                        color: '#ffffff',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Начать
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
 
+            {/* Поле ввода и кнопки */}
             <div style={{ 
                 display: 'flex',
                 gap: '10px',
@@ -771,6 +770,185 @@ const Chat = ({ token, isDarkTheme }) => {
                     Очистить
                 </button>
             </div>
+
+            {/* Модальные окна */}
+            {showPentestResults && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    zIndex: 1000,
+                }}>
+                    <div style={{
+                        backgroundColor: isDarkTheme ? '#4a4d57' : '#ffffff',
+                        padding: '20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        width: '90%',
+                        height: '80vh',
+                        maxWidth: '800px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}>
+                        <h3 style={{ 
+                            marginBottom: '20px',
+                            color: isDarkTheme ? '#ffffff' : '#000000',
+                            fontSize: '18px',
+                            textAlign: 'center'
+                        }}>
+                            Результаты пентеста
+                        </h3>
+                        <div style={{
+                            flex: 1,
+                            backgroundColor: isDarkTheme ? '#2d2d2d' : '#f5f5f5',
+                            borderRadius: '8px',
+                            marginBottom: '15px',
+                            position: 'relative',
+                            width: '100%',
+                            height: 'calc(80vh - 120px)',
+                        }}>
+                            <div style={{ width: '100%', height: '100%' }}>
+                                <ReactFlow
+                                    nodes={nodes}
+                                    edges={edges}
+                                    fitView
+                                    style={flowStyles}
+                                    defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+                                    minZoom={0.1}
+                                    maxZoom={4}
+                                    attributionPosition="bottom-right"
+                                >
+                                    <Background color={isDarkTheme ? '#666' : '#aaa'} gap={16} />
+                                    <Controls />
+                                </ReactFlow>
+                            </div>
+                        </div>
+                        <div style={{ 
+                            display: 'flex',
+                            justifyContent: 'flex-end'
+                        }}>
+                            <button
+                                onClick={handleClosePentestResults}
+                                style={{
+                                    padding: '8px 16px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    backgroundColor: isDarkTheme ? '#666' : '#e0e0e0',
+                                    color: isDarkTheme ? '#ffffff' : '#000000',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Закрыть
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Модальное окно пентеста */}
+            {showPentestForm && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    zIndex: 1000,
+                }}>
+                    <div style={{
+                        backgroundColor: isDarkTheme ? '#4a4d57' : '#ffffff',
+                        padding: '20px',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        width: '80%',
+                        maxWidth: '400px',
+                    }}>
+                        <h3 style={{ 
+                            marginBottom: '20px',
+                            color: isDarkTheme ? '#ffffff' : '#000000',
+                            fontSize: '18px',
+                            textAlign: 'center'
+                        }}>
+                            Автоматический пентест
+                        </h3>
+                        <div style={{ marginBottom: '15px' }}>
+                            <input
+                                type="text"
+                                placeholder="Адрес цели"
+                                value={pentestData.targetAddress}
+                                onChange={(e) => setPentestData(prev => ({ ...prev, targetAddress: e.target.value }))}
+                                style={{
+                                    width: '100%',
+                                    padding: '8px 12px',
+                                    borderRadius: '8px',
+                                    border: isDarkTheme ? '1px solid #666' : '1px solid #ddd',
+                                    backgroundColor: isDarkTheme ? '#545762' : '#ffffff',
+                                    color: isDarkTheme ? '#ffffff' : '#000000',
+                                    marginBottom: '10px',
+                                    outline: 'none'
+                                }}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Название цели"
+                                value={pentestData.targetName}
+                                onChange={(e) => setPentestData(prev => ({ ...prev, targetName: e.target.value }))}
+                                style={{
+                                    width: '100%',
+                                    padding: '8px 12px',
+                                    borderRadius: '8px',
+                                    border: isDarkTheme ? '1px solid #666' : '1px solid #ddd',
+                                    backgroundColor: isDarkTheme ? '#545762' : '#ffffff',
+                                    color: isDarkTheme ? '#ffffff' : '#000000',
+                                    outline: 'none'
+                                }}
+                            />
+                        </div>
+                        <div style={{ 
+                            display: 'flex',
+                            gap: '10px',
+                            justifyContent: 'flex-end'
+                        }}>
+                            <button
+                                onClick={handleCancelPentest}
+                                style={{
+                                    padding: '8px 16px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    backgroundColor: isDarkTheme ? '#666' : '#e0e0e0',
+                                    color: isDarkTheme ? '#ffffff' : '#000000',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Отмена
+                            </button>
+                            <button
+                                onClick={handleStartPentest}
+                                style={{
+                                    padding: '8px 16px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    backgroundColor: '#4CAF50',
+                                    color: '#ffffff',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Начать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
