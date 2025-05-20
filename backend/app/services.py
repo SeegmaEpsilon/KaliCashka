@@ -149,7 +149,7 @@ def send_message_to_ai(user_id: int, message: str, db: Session) -> str:
 
         # Формируем тело запроса
         request_data = {
-            "model": "deepseek/deepseek-r1-turbo",
+            "model": "deepseek/deepseek_v3",
             "messages": formatted_messages,
             "response_format": {"type": "text"}
         }
@@ -270,7 +270,7 @@ async def auto_pentest_loop(          # ← теперь async!
     service_name: str,
     user_id: str,
     db: Session,
-    max_steps: int = 10,
+    max_steps: int = 100,
 ) -> str:
     await _emit(user_id, "init", f"Запуск автопентеста против {target_info}")
 
@@ -291,6 +291,7 @@ async def auto_pentest_loop(          # ← теперь async!
             await _emit(user_id, "step_start", {"step": step + 1})
 
             cmd_resp = send_message_to_ai(user_id, GET_NEW_COMMAND_PROMPT, db)
+            print(f"Ответ ИИ: {cmd_resp}")
             extract = extract_command_and_stage_from_response(cmd_resp)
             if not extract:
                 await _emit(user_id, "no_command", "Команда не получена, завершаю.")
